@@ -201,19 +201,35 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   })();
 
-  /* ════════ Сценарный слайдер: табы диалог + статус ════════ */
+  /* ════════ Сценарный слайдер: табы диалог + статус (ARIA + клавиатура) ════════ */
   (function () {
     var tabs = Array.from(document.querySelectorAll('.zv-tab'));
     if (!tabs.length) return;
     var panels = Array.from(document.querySelectorAll('.zv-tab-panel'));
-    tabs.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        tabs.forEach(function (t) { t.classList.remove('is-active'); t.setAttribute('aria-selected', 'false'); });
-        panels.forEach(function (p) { p.classList.remove('is-active'); p.setAttribute('hidden', ''); });
-        btn.classList.add('is-active');
-        btn.setAttribute('aria-selected', 'true');
-        var panel = document.querySelector('[data-panel="' + btn.dataset.tab + '"]');
-        if (panel) { panel.removeAttribute('hidden'); panel.classList.add('is-active'); }
+    function activate(btn, focus) {
+      tabs.forEach(function (t) {
+        t.classList.remove('is-active');
+        t.setAttribute('aria-selected', 'false');
+        t.setAttribute('tabindex', '-1');
+      });
+      panels.forEach(function (p) { p.classList.remove('is-active'); p.setAttribute('hidden', ''); });
+      btn.classList.add('is-active');
+      btn.setAttribute('aria-selected', 'true');
+      btn.setAttribute('tabindex', '0');
+      var panel = document.querySelector('[data-panel="' + btn.dataset.tab + '"]');
+      if (panel) { panel.removeAttribute('hidden'); panel.classList.add('is-active'); }
+      if (focus) btn.focus();
+    }
+    tabs.forEach(function (btn, i) {
+      btn.setAttribute('tabindex', btn.classList.contains('is-active') ? '0' : '-1');
+      btn.addEventListener('click', function () { activate(btn, false); });
+      btn.addEventListener('keydown', function (e) {
+        var idx = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') idx = (i + 1) % tabs.length;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') idx = (i - 1 + tabs.length) % tabs.length;
+        else if (e.key === 'Home') idx = 0;
+        else if (e.key === 'End') idx = tabs.length - 1;
+        if (idx !== null) { e.preventDefault(); activate(tabs[idx], true); }
       });
     });
   })();
