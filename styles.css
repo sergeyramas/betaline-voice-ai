@@ -412,12 +412,6 @@ section { padding: clamp(64px, 9vw, 110px) 0; }
 }
 .zv-contrast-row .zv-col-market { color: var(--text-mute); background: #FAFAF7; }
 .zv-contrast-row .zv-col-bl { color: var(--text-ink); font-weight: 500; }
-.zv-contrast-row .zv-col-bl::before {
-  content: '✓';
-  color: var(--green);
-  font-weight: 800;
-  margin-right: 9px;
-}
 .zv-guide-note {
   margin-top: 28px;
   font: 500 16px/1.6 var(--font-sans);
@@ -449,6 +443,18 @@ section { padding: clamp(64px, 9vw, 110px) 0; }
   border-color: var(--orange-soft);
   box-shadow: var(--shadow-card);
 }
+.zv-task-ico {
+  width: 46px; height: 46px;
+  border-radius: var(--r-md);
+  background: var(--orange-tint);
+  color: var(--orange-dark);
+  display: grid; place-items: center;
+  margin-bottom: 4px;
+  transition: transform var(--dur) var(--ease-out);
+}
+.zv-task-ico svg { width: 24px; height: 24px; }
+.zv-task-card:hover .zv-task-ico { transform: translateY(-2px) rotate(-3deg); }
+.zv-task-cta .zv-task-ico { background: var(--orange); color: #fff; }
 .zv-task-card h3 {
   font: 700 17px/1.3 var(--font-sans);
   letter-spacing: -0.3px;
@@ -579,6 +585,76 @@ section { padding: clamp(64px, 9vw, 110px) 0; }
   border: 1.5px dashed var(--orange-soft);
   border-radius: var(--r-pill);
   padding: 12px 22px;
+}
+
+/* ── Scenario slider (табы: диалог + статус) ── */
+.zv-scenario-tabs {
+  margin-top: 44px;
+  position: relative;
+  border: 1px solid var(--orange-soft);
+  border-radius: var(--r-2xl);
+  padding: clamp(16px, 2.6vw, 26px);
+  background: #fff;
+  box-shadow: var(--shadow-hairline);
+}
+.zv-tab-buttons { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.zv-tab {
+  min-height: 46px;
+  padding: 0 20px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid var(--border-soft);
+  background: #fff;
+  color: var(--text-body);
+  font: 700 15px/1 var(--font-sans);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast), background var(--dur-fast), color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.zv-tab:hover { border-color: var(--orange-soft); transform: translateY(-1px); }
+.zv-tab.is-active {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #fff;
+  box-shadow: var(--shadow-card);
+}
+.zv-tab-panel { display: none; grid-template-columns: 1.3fr 0.7fr; gap: 16px; }
+.zv-tab-panel.is-active { display: grid; animation: zvFadeUp .35s var(--ease-out) both; }
+.zv-call-card, .zv-result-card {
+  padding: clamp(18px, 2.6vw, 26px);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-xl);
+  background: var(--bg-warm);
+}
+.zv-call-card h3 {
+  font: 800 clamp(18px, 2.2vw, 21px)/1.3 var(--font-display);
+  letter-spacing: -0.4px;
+  color: var(--text-ink);
+  margin-bottom: 8px;
+}
+.zv-call-card p { font: 400 15px/1.55 var(--font-sans); color: var(--text-mute); }
+.zv-chat-line {
+  margin-top: 12px;
+  padding: 13px 16px;
+  border-radius: 16px;
+  font: 600 15px/1.4 var(--font-sans);
+  color: var(--text-ink);
+  max-width: 90%;
+}
+.zv-cl-bot { background: #fff; border: 1px solid var(--border-soft); }
+.zv-cl-human { background: var(--orange-tint); margin-left: auto; }
+.zv-result-card { display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+.zv-result-card strong {
+  font: 800 clamp(26px, 3.4vw, 32px)/1 var(--font-mono);
+  letter-spacing: -0.5px;
+  color: var(--green-dark);
+}
+.zv-result-card span { font: 500 14px/1.5 var(--font-sans); color: var(--text-mute); }
+.zv-tabs-note {
+  display: block;
+  margin-top: 16px;
+  text-align: right;
+  font: 600 12px/1 var(--font-mono);
+  letter-spacing: 0.5px;
+  color: var(--text-faint);
 }
 
 /* ── Plan (3 шага) ── */
@@ -1078,6 +1154,9 @@ section { padding: clamp(64px, 9vw, 110px) 0; }
   html { scroll-behavior: auto; }
   .zv-reveal { opacity: 1; transform: none; transition: none; }
   .zv-hero-float .zv-pulse::after { animation: none; }
+  .zv-contrast-table .zv-contrast-row { opacity: 1; transform: none; transition: none; }
+  .zv-cr-ico { transform: none !important; }
+  .zv-tab-panel.is-active { animation: none; }
 }
 
 /* ============================================================
@@ -1097,9 +1176,10 @@ section { padding: clamp(64px, 9vw, 110px) 0; }
 }
 @media (max-width: 640px) {
   .zv-quotes-grid, .zv-tasks-grid, .zv-scenarios-grid, .zv-steps-grid, .zv-integrations,
-  .zv-vs-card, .zv-safety-grid, .zv-form-row {
+  .zv-vs-card, .zv-safety-grid, .zv-form-row, .zv-tab-panel {
     grid-template-columns: 1fr;
   }
+  .zv-chat-line { max-width: 100%; }
   .zv-contrast-head, .zv-contrast-row { grid-template-columns: 1fr; }
   .zv-contrast-head .zv-col-market { display: none; }
   .zv-contrast-row .zv-col-market { border-bottom: 1px dashed var(--border); }
@@ -1475,9 +1555,10 @@ section { padding: clamp(64px, 9vw, 110px) 0; }
 @keyframes zvFloat { 0%,100% { translate: 0 0; } 50% { translate: 0 -6px; } }
 
 /* ── Problems: строки с персонажами (подача основного сайта) ── */
-.zv-problem-row { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(24px, 4vw, 56px); align-items: center; margin-top: 46px; }
-.zv-problem-row--rev .zv-problem-img { order: 2; }
-.zv-problem-img { background: #fff; border: 1px solid var(--border-soft); border-radius: var(--r-2xl); box-shadow: var(--shadow-hairline); overflow: hidden; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur); }
+.zv-problem-row { display: flex; align-items: center; gap: clamp(28px, 5vw, 64px); margin-top: 46px; }
+.zv-problem-row--rev { flex-direction: row-reverse; }
+.zv-problem-img { flex: 0 0 clamp(200px, 24vw, 300px); max-width: clamp(200px, 24vw, 300px); background: #fff; border: 1px solid var(--border-soft); border-radius: var(--r-2xl); box-shadow: var(--shadow-hairline); overflow: hidden; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur); }
+.zv-problem-text { flex: 1 1 auto; min-width: 0; }
 .zv-problem-row:hover .zv-problem-img { transform: translateY(-5px) rotate(-0.4deg); box-shadow: var(--shadow-card); }
 .zv-problem-img img { width: 100%; aspect-ratio: 1; object-fit: cover; }
 .zv-problem-text h3 { font: 800 clamp(22px, 2.6vw, 30px)/1.2 var(--font-display); letter-spacing: -0.5px; color: var(--text-ink); margin-bottom: 14px; }
@@ -1489,16 +1570,30 @@ section { padding: clamp(64px, 9vw, 110px) 0; }
 .zv-problem-text p { font: 400 16px/1.6 var(--font-sans); color: var(--text-mute); margin-bottom: 10px; }
 .zv-problem-text footer { font: var(--t-caption); color: var(--text-faint); }
 @media (max-width: 860px) {
-  .zv-problem-row { grid-template-columns: 1fr; gap: 18px; }
-  .zv-problem-row--rev .zv-problem-img { order: 0; }
-  .zv-problem-img { max-width: 340px; margin: 0 auto; }
+  .zv-problem-row, .zv-problem-row--rev { flex-direction: column; gap: 18px; }
+  .zv-problem-img { flex-basis: auto; max-width: 260px; margin: 0 auto; }
 }
 
-/* ── Contrast: живее ── */
-.zv-contrast-row .zv-col-market::before { content: '✕'; color: var(--red-text); background: var(--red-soft); width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; margin-right: 10px; flex-shrink: 0; }
-.zv-contrast-row > div { display: flex; align-items: baseline; }
+/* ── Contrast: инфографика по строкам + каскад ── */
+.zv-contrast-row > div { display: flex; align-items: center; gap: 12px; }
 .zv-contrast-row { transition: background var(--dur-fast); }
 .zv-contrast-row:hover .zv-col-bl { background: var(--bg-warm); }
+/* тематическая иконка-бейдж в начале каждой строки */
+.zv-cr-ico { flex: 0 0 34px; width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; }
+.zv-cr-ico svg { width: 19px; height: 19px; }
+.zv-col-market .zv-cr-ico { background: #F1EFEA; color: var(--text-faint); }
+.zv-col-bl .zv-cr-ico { background: var(--orange-tint); color: var(--orange-dark); }
+/* каскадное появление строк, когда таблица во вьюпорте */
+.zv-contrast-table .zv-contrast-row { opacity: 0; transform: translateY(14px); transition: opacity .5s var(--ease-out), transform .5s var(--ease-out); }
+.zv-contrast-table.visible .zv-contrast-row { opacity: 1; transform: none; }
+.zv-contrast-table.visible .zv-contrast-row:nth-of-type(2) { transition-delay: .05s; }
+.zv-contrast-table.visible .zv-contrast-row:nth-of-type(3) { transition-delay: .11s; }
+.zv-contrast-table.visible .zv-contrast-row:nth-of-type(4) { transition-delay: .17s; }
+.zv-contrast-table.visible .zv-contrast-row:nth-of-type(5) { transition-delay: .23s; }
+.zv-contrast-table.visible .zv-contrast-row:nth-of-type(6) { transition-delay: .29s; }
+.zv-contrast-table.visible .zv-contrast-row:nth-of-type(7) { transition-delay: .35s; }
+.zv-cr-ico { transition: transform .5s var(--ease-out); }
+.zv-contrast-table:not(.visible) .zv-cr-ico { transform: scale(.6); }
 
 /* ── Scenario branch chips ── */
 .zv-branch-chips { display: flex; flex-wrap: wrap; gap: 7px; }

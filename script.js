@@ -201,6 +201,23 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   })();
 
+  /* ════════ Сценарный слайдер: табы диалог + статус ════════ */
+  (function () {
+    var tabs = Array.from(document.querySelectorAll('.zv-tab'));
+    if (!tabs.length) return;
+    var panels = Array.from(document.querySelectorAll('.zv-tab-panel'));
+    tabs.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        tabs.forEach(function (t) { t.classList.remove('is-active'); t.setAttribute('aria-selected', 'false'); });
+        panels.forEach(function (p) { p.classList.remove('is-active'); p.setAttribute('hidden', ''); });
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-selected', 'true');
+        var panel = document.querySelector('[data-panel="' + btn.dataset.tab + '"]');
+        if (panel) { panel.removeAttribute('hidden'); panel.classList.add('is-active'); }
+      });
+    });
+  })();
+
   /* ════════ FAQ: hover-раскрытие как на основном сайте ════════ */
   (function () {
     var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
