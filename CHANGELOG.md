@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2 — 2026-07-07
+
+- Replaced the emoji phone favicon with a branded cream/orange BetaLine Voice AI waveform favicon.
+
 ## 1.0.1 — 2026-07-07
 
 - Rewrote the problems section copy from research/report language into a clearer landing-page message.
