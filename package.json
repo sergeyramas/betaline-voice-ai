@@ -1,0 +1,13 @@
+{
+  "name": "betaline-voice-ai",
+  "version": "1.0.0",
+  "description": "BetaLine Voice AI landing — голосовой AI-бот, управляемый пилот",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "google-auth-library": "^9.0.0",
+    "openai": "^6.34.0"
+  }
+}

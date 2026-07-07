@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Голосовой AI-бот для обзвона и первичных ответов — BetaLine AI</title>
+  <meta name="description" content="Запустим пилот голосового AI-бота для первичных звонков, ответов по скрипту и передачи заявок менеджеру. Демо, сценарий, пилот и результат в CRM/таблицу/Telegram.">
+  <link rel="canonical" href="https://betaline-voice-ai.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Голосовой AI-бот для обзвона и первичных ответов — BetaLine AI">
+  <meta property="og:description" content="Запустим пилот голосового AI-бота для первичных звонков, ответов по скрипту и передачи заявок менеджеру. Демо, сценарий, пилот и результат в CRM/таблицу/Telegram.">
+  <meta property="og:image" content="/assets/img/og-voice-ai.png">
+  <meta property="og:locale" content="ru_RU">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📞</text></svg>">
+  <link rel="preload" as="image" href="assets/img/voice-hero-product-v2.jpg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ═══════════ NAVBAR ═══════════ -->
+  <nav class="zv-navbar" id="zv-navbar" aria-label="Основная навигация">
+    <div class="zv-nav-inner">
+      <a href="#" class="zv-logo" aria-label="BetaLine Voice AI — на главную">
+        BetaLine<span class="zv-logo-dot">.</span>
+        <span class="zv-logo-badge">Voice AI</span>
+      </a>
+      <div class="zv-nav-links">
+        <a href="#scenarios">Демо</a>
+        <a href="#tasks">Задачи</a>
+        <a href="#plan">Как запускаем</a>
+        <a href="#safety">Безопасность</a>
+        <a href="#pilot">Пилот</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="zv-nav-right">
+        <a href="tel:88002001849" class="zv-nav-phone" data-track="voice_phone_click">8 800 200-18-49</a>
+        <a href="#lead-form" class="btn-primary zv-nav-cta" data-track="voice_header_cta_click">Получить разбор</a>
+        <button class="zv-burger" id="zv-burger" aria-label="Открыть меню" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <div class="zv-mobile-menu" id="zv-mobile-menu">
+    <a href="#scenarios">Демо</a>
+    <a href="#tasks">Задачи</a>
+    <a href="#plan">Как запускаем</a>
+    <a href="#safety">Безопасность</a>
+    <a href="#pilot">Пилот</a>
+    <a href="#faq">FAQ</a>
+    <a href="tel:88002001849" data-track="voice_phone_click">📞 8 800 200-18-49</a>
+    <a href="#lead-form" class="btn-primary" data-track="voice_header_cta_click">Получить разбор</a>
+  </div>
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <header class="zv-hero" id="zv-hero">
+    <div class="zv-hero-grid">
+      <div>
+        <p class="zv-eyebrow">Voice AI · Контролируемый пилот</p>
+        <h1>Голосовой AI-бот для первичных звонков, ответов по скрипту и <mark>передачи заявок менеджеру</mark></h1>
+        <p class="zv-hero-sub">Запускаем пилот по одному утверждённому сценарию: бот звонит или отвечает по скрипту, звучит естественно, фиксирует результат и передаёт сложные разговоры человеку. Перед запуском проверяем базу, согласия, стоп-фразы и границы ответов.</p>
+        <p class="zv-redline">Сначала проверяем сценарий и показываем демо — потом запускаем обзвон.</p>
+        <div class="zv-hero-ctas">
+          <a href="#lead-form" class="btn-primary" data-track="voice_scenario_review_click">Получить разбор сценария и демо-запись</a>
+          <a href="#scenarios" class="btn-secondary">Посмотреть примеры сценариев</a>
+        </div>
+        <div class="zv-chips" aria-label="Что умеет бот">
+          <span class="zv-chip">первичный обзвон</span>
+          <span class="zv-chip">ответы по скрипту</span>
+          <span class="zv-chip">передача менеджеру</span>
+          <span class="zv-chip">результат в CRM/таблицу</span>
+          <span class="zv-chip">стоп-фразы и контроль</span>
+        </div>
+      </div>
+      <div class="zv-hero-visual">
+        <figure class="zv-figure" style="margin:0;">
+          <img src="assets/img/voice-hero-product-v2.jpg" alt="Иллюстрация: карточка звонка голосового AI-бота — волновая форма, транскрипт, статус и передача менеджеру" width="1440" height="1080" fetchpriority="high">
+          <figcaption class="zv-mock-label">пример результата тестового звонка · демо-макет</figcaption>
+        </figure>
+        <div class="zv-hero-float" aria-hidden="true">
+          <span class="zv-pulse"></span>
+          Заинтересован → передано менеджеру
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+  <!-- ═══════════ PROBLEM (SB7: проблема героя) ═══════════ -->
+  <section id="problems" aria-labelledby="problems-h">
+    <div class="zv-container">
+      <div class="zv-center zv-reveal">
+        <p class="zv-eyebrow">Почему обзвону не доверяют</p>
+        <h2 class="zv-h2" id="problems-h">Рынок обещает «робота вместо отдела продаж».<br>Бизнес получает другое</h2>
+        <p class="zv-sub">Это дословные цитаты из открытых отзывов о сервисах голосового обзвона. Мы собрали их, прежде чем строить продукт.</p>
+      </div>
+      <div class="zv-quotes-grid">
+        <blockquote class="zv-quote-card zv-reveal" style="margin:0;">
+          <span class="zv-quote-tag">Сырой бот</span>
+          <p class="zv-quote-text">Робот, которого мне сделали, был максимально тупым</p>
+          <footer class="zv-quote-src">из отзыва о голосовом боте, 2023</footer>
+        </blockquote>
+        <blockquote class="zv-quote-card zv-reveal" style="margin:0;">
+          <span class="zv-quote-tag">Сожжённая база</span>
+          <p class="zv-quote-text">Больше половины звонков попадали на блок от операторов</p>
+          <footer class="zv-quote-src">из отзыва о сервисе обзвона, 2022</footer>
+        </blockquote>
+        <blockquote class="zv-quote-card zv-reveal" style="margin:0;">
+          <span class="zv-quote-tag">Недовольные клиенты</span>
+          <p class="zv-quote-text">Подмена живого общения роботом сразу была замечена — клиенты массово сообщали о минусах</p>
+          <footer class="zv-quote-src">из отзыва о автообзвоне, 2023</footer>
+        </blockquote>
+      </div>
+      <p class="zv-philosophy zv-reveal">Проблема не в голосовых ботах — а в запуске вслепую.<br><em>Ваш клиент заслуживает нормального разговора, даже когда звонит AI.</em></p>
+    </div>
+  </section>
+
+  <!-- ═══════════ GUIDE / MARKET CONTRAST (SB7: гид, красная линия) ═══════════ -->
+  <section id="approach" class="zv-contrast" aria-labelledby="approach-h">
+    <div class="zv-container">
+      <div class="zv-center zv-reveal">
+        <p class="zv-eyebrow">Красная линия</p>
+        <h2 class="zv-h2" id="approach-h">Что обычно предлагают на рынке — и как делаем мы</h2>
+        <p class="zv-sub">Не обещаем «робота вместо отдела продаж». Показываем, какие звонки реально можно отдать AI-боту, где нужен человек и что покажет пилот.</p>
+      </div>
+      <div class="zv-contrast-table zv-reveal" role="table" aria-label="Сравнение подходов: обычно на рынке и BetaLine">
+        <div class="zv-contrast-head" role="row">
+          <div class="zv-col-market" role="columnheader">Обычно на рынке</div>
+          <div class="zv-col-bl" role="columnheader">BetaLine</div>
+        </div>
+        <div class="zv-contrast-row" role="row">
+          <div class="zv-col-market" role="cell">Кабинет и минуты для самостоятельной настройки</div>
+          <div class="zv-col-bl" role="cell">Разбор задачи, сценарий и запуск под бизнес</div>
+        </div>
+        <div class="zv-contrast-row" role="row">
+          <div class="zv-col-market" role="cell">Акцент на количестве звонков</div>
+          <div class="zv-col-bl" role="cell">Акцент на качестве сценария и контроле риска</div>
+        </div>
+        <div class="zv-contrast-row" role="row">
+          <div class="zv-col-market" role="cell">Обещание «почти человек»</div>
+          <div class="zv-col-bl" role="cell">Демо-запись и честная оценка голоса</div>
+        </div>
+        <div class="zv-contrast-row" role="row">
+          <div class="zv-col-market" role="cell">Широкие обещания про ROI</div>
+          <div class="zv-col-bl" role="cell">Метрики пилота без гарантии продаж</div>
+        </div>
+        <div class="zv-contrast-row" role="row">
+          <div class="zv-col-market" role="cell">Интеграции «со всем»</div>
+          <div class="zv-col-bl" role="cell">Подтверждение интеграции перед пилотом</div>
+        </div>
+        <div class="zv-contrast-row" role="row">
+          <div class="zv-col-market" role="cell">Холодный обзвон как простая кнопка</div>
+          <div class="zv-col-bl" role="cell">Проверка базы, согласий и допустимости сценария</div>
+        </div>
+      </div>
+      <p class="zv-guide-note zv-reveal">Мы внедряем AI-ассистентов для бизнеса — <a href="https://betaline-ai.ru" target="_blank" rel="noopener">betaline-ai.ru</a> — и голосовые пилоты запускаем по тому же принципу: сначала проверяем и показываем, потом запускаем. <a href="#lead-form" data-track="voice_scenario_review_click">Получить честный разбор сценария →</a></p>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCENARIOS / DEMO ═══════════ -->
+  <section id="scenarios" aria-labelledby="scenarios-h">
+    <div class="zv-container">
+      <div class="zv-center zv-reveal">
+        <p class="zv-eyebrow">Демо</p>
+        <h2 class="zv-h2" id="scenarios-h">Сначала услышать, потом запускать</h2>
+        <p class="zv-sub">Мы не просим поверить в «человеческий голос» на словах. Даём демо, транскрипт и понятные границы сценария.</p>
+      </div>
+      <div class="zv-scenarios-grid">
+        <article class="zv-scenario-card zv-reveal">
+          <div class="zv-scenario-img">
+            <img src="assets/img/scenario-outreach.jpg" alt="Иллюстрация сценария: первичный обзвон базы — транскрипт диалога" loading="lazy" width="960" height="720">
+            <span class="zv-mock-label">пример сценария</span>
+          </div>
+          <div class="zv-scenario-body">
+            <h3>Первичный обзвон базы</h3>
+            <p class="zv-scenario-goal">Цель: первый контакт, 2–4 вопроса, фиксация интереса.</p>
+            <ul class="zv-scenario-list">
+              <li>«Интересно» → уточняет потребность, передаёт менеджеру</li>
+              <li>«Не сейчас» → фиксирует, договаривается о времени</li>
+              <li>«Не звоните» → стоп-лист, завершает разговор</li>
+            </ul>
+            <p class="zv-scenario-handoff">Менеджеру передаётся: статус, транскрипт, следующий шаг</p>
+          </div>
+        </article>
+        <article class="zv-scenario-card zv-reveal">
+          <div class="zv-scenario-img">
+            <img src="assets/img/scenario-confirm.jpg" alt="Иллюстрация сценария: подтверждение записи — транскрипт диалога" loading="lazy" width="960" height="720">
+            <span class="zv-mock-label">пример сценария</span>
+          </div>
+          <div class="zv-scenario-body">
+            <h3>Подтверждение записи</h3>
+            <p class="zv-scenario-goal">Цель: подтвердить визит/событие, снизить неявки.</p>
+            <ul class="zv-scenario-list">
+              <li>«Приду» → подтверждает, отправляет статус</li>
+              <li>«Перенесите» → фиксирует новое время или передаёт администратору</li>
+              <li>«Отмена» → фиксирует причину, освобождает слот</li>
+            </ul>
+            <p class="zv-scenario-handoff">В CRM/таблицу: подтверждено · перенос · отмена + комментарий</p>
+          </div>
+        </article>
+        <article class="zv-scenario-card zv-reveal">
+          <div class="zv-scenario-img">
+            <img src="assets/img/scenario-script.jpg" alt="Иллюстрация сценария: ответ по скрипту — транскрипт диалога" loading="lazy" width="960" height="720">
+            <span class="zv-mock-label">пример сценария</span>
+          </div>
+          <div class="zv-scenario-body">
+            <h3>Ответ по скрипту</h3>
+            <p class="zv-scenario-goal">Цель: быстрый ответ на типовые вопросы по утверждённой базе знаний.</p>
+            <ul class="zv-scenario-list">
+              <li>Типовой вопрос → отвечает по согласованному скрипту</li>
+              <li>Вопрос вне скрипта → не выдумывает, фиксирует и передаёт человеку</li>
+              <li>Запрос цены вне базы → уточнение у менеджера</li>
+            </ul>
+            <p class="zv-scenario-handoff">Бот не выдумывает цены и обещания — это граница сценария</p>
+          </div>
+        </article>
+      </div>
+      <p class="zv-demo-note zv-reveal"><span>🎧 Демо-запись под ваш сценарий подготовим после короткого брифа</span></p>
+    </div>
+  </section>
+
+  <!-- ═══════════ TASKS MATRIX ═══════════ -->
+  <section id="tasks" class="zv-contrast" aria-labelledby="tasks-h">
+    <div class="zv-container">
+      <div class="zv-center zv-reveal">
+        <p class="zv-eyebrow">Задачи</p>
+        <h2 class="zv-h2" id="tasks-h">Какие звонки можно отдать AI-боту</h2>
+        <p class="zv-sub">У каждой задачи есть честное ограничение — мы фиксируем его до запуска, а не после.</p>
+      </div>
+      <div class="zv-tasks-grid">
+        <article class="zv-task-card zv-reveal">
+          <h3>Первичная / холодная база</h3>
+          <p class="zv-task-does">Первый контакт, 2–4 вопроса, фиксация интереса.</p>
+          <p class="zv-task-result">Менеджер получает только потенциально интересных людей</p>
+          <p class="zv-task-limit"><strong>Ограничение:</strong> только после проверки базы, согласий и сценария</p>
+        </article>
+        <article class="zv-task-card zv-reveal">
+          <h3>Тёплая база</h3>
+          <p class="zv-task-does">Напоминает, подтверждает, реактивирует.</p>
+          <p class="zv-task-result">Меньше забытых заявок и пропущенных продаж</p>
+          <p class="zv-task-limit"><strong>Ограничение:</strong> нужен понятный повод звонка</p>
+        </article>
+        <article class="zv-task-card zv-reveal">
+          <h3>Разгрузка менеджеров</h3>
+          <p class="zv-task-does">Забирает однотипные звонки и первичную сортировку.</p>
+          <p class="zv-task-result">Менеджеры тратят время на целевые разговоры</p>
+          <p class="zv-task-limit"><strong>Ограничение:</strong> сложные вопросы передаются человеку</p>
+        </article>
+        <article class="zv-task-card zv-reveal">
+          <h3>Ответы по скрипту</h3>
+          <p class="zv-task-does">Отвечает по утверждённой базе знаний.</p>
+          <p class="zv-task-result">Клиент получает быстрый ответ, обращение не теряется</p>
+          <p class="zv-task-limit"><strong>Ограничение:</strong> бот не должен выдумывать цены и обещания</p>
+        </article>
+        <article class="zv-task-card zv-reveal">
+          <h3>Пропущенные обращения</h3>
+          <p class="zv-task-does">Перезванивает и фиксирует статус.</p>
+          <p class="zv-task-result">Заявки не остывают</p>
+          <p class="zv-task-limit"><strong>Ограничение:</strong> доступно после подтверждения телефонии</p>
+        </article>
+        <article class="zv-task-card zv-reveal">
+          <h3>Подтверждения и напоминания</h3>
+          <p class="zv-task-does">Подтверждает запись, визит, событие.</p>
+          <p class="zv-task-result">Меньше неявок и ручной рутины</p>
+          <p class="zv-task-limit"><strong>Ограничение:</strong> текст должен быть согласован</p>
+        </article>
+        <article class="zv-task-card zv-reveal">
+          <h3>HR / NPS / опросы</h3>
+          <p class="zv-task-does">Задаёт короткие вопросы и собирает ответы.</p>
+          <p class="zv-task-result">Быстрый первичный фильтр и обратная связь</p>
+          <p class="zv-task-limit"><strong>Ограничение:</strong> не подходит для сложного интервью</p>
+        </article>
+        <article class="zv-task-card zv-reveal" style="background:var(--orange-tint); border-color:var(--orange-soft); justify-content:center; text-align:center;">
+          <h3 style="font-size:18px;">Ваша задача?</h3>
+          <p class="zv-task-does">Разберём цель звонка и честно скажем, подойдёт ли бот.</p>
+          <a href="#lead-form" class="btn-primary" style="align-self:center; padding:13px 22px; font-size:14px;" data-track="voice_scenario_review_click">Понять, что подойдёт →</a>
+        </article>
+      </div>
+
+      <!-- AI-бот vs автоинформатор -->
+      <div class="zv-vs-card">
+        <div class="zv-vs-col zv-vs-old zv-reveal">
+          <h3>Обычный автоинформатор</h3>
+          <ul>
+            <li>Читает линейный текст до конца</li>
+            <li>Плохо обрабатывает отказ</li>
+            <li>Не знает, когда нужен человек</li>
+            <li>Мало полезных данных после звонка</li>
+            <li>Часто запускается вслепую</li>
+          </ul>
+        </div>
+        <div class="zv-vs-col zv-vs-new zv-reveal">
+          <h3>Голосовой AI-бот BetaLine</h3>
+          <ul>
+            <li>Ветки диалога по ответам клиента</li>
+            <li>Фиксирует отказ и стоп-фразу</li>
+            <li>Передаёт менеджеру сложные вопросы</li>
+            <li>Возвращает статус, транскрипт и следующий шаг</li>
+            <li>Сначала тест, потом пилот</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PLAN (SB7: план из 3 шагов) ═══════════ -->
+  <section id="plan" class="zv-plan" aria-labelledby="plan-h">
+    <div class="zv-container">
+      <div class="zv-center zv-reveal">
+        <p class="zv-eyebrow">План</p>
+        <h2 class="zv-h2" id="plan-h">Как запускаем пилот</h2>
+        <p class="zv-sub">Без кабинета, в котором нужно разбираться самому. Три понятных этапа — и на каждом видно результат.</p>
+      </div>
+      <div class="zv-steps-grid">
+        <article class="zv-step-card zv-reveal">
+          <div class="zv-step-img">
+            <img src="assets/img/step-1-razbor.jpg" alt="Иллюстрация: этап разбора задачи и проверки базы" loading="lazy" width="960" height="720">
+          </div>
+          <div class="zv-step-body">
+            <span class="zv-step-num" aria-hidden="true"></span>
+            <h3>Разбор и проверка</h3>
+            <ul>
+              <li>Разбираем цель звонка и базу</li>
+              <li>Проверяем согласия, стоп-листы и что нельзя обещать</li>
+            </ul>
+          </div>
+        </article>
+        <article class="zv-step-card zv-reveal">
+          <div class="zv-step-img">
+            <img src="assets/img/step-2-demo.jpg" alt="Иллюстрация: этап сценария, голоса и демо-записи" loading="lazy" width="960" height="720">
+          </div>
+          <div class="zv-step-body">
+            <span class="zv-step-num" aria-hidden="true"></span>
+            <h3>Сценарий и демо</h3>
+            <ul>
+              <li>Пишем сценарий и правила передачи менеджеру</li>
+              <li>Готовим голос, тестовые ветки и демо-запись</li>
+            </ul>
+          </div>
+        </article>
+        <article class="zv-step-card zv-reveal">
+          <div class="zv-step-img">
+            <img src="assets/img/step-3-pilot.jpg" alt="Иллюстрация: этап пилота и результатов в CRM" loading="lazy" width="960" height="720">
+          </div>
+          <div class="zv-step-body">
+            <span class="zv-step-num" aria-hidden="true"></span>
+            <h3>Пилот и результат</h3>
+            <ul>
+              <li>Запускаем пилот на ограниченном объёме</li>
+              <li>Отдаём статусы, записи/транскрипты и выводы</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+      <div class="zv-center" style="margin-top:40px;">
+        <a href="#lead-form" class="btn-primary zv-reveal" data-track="voice_pilot_request_click">Получить план пилота</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SAFETY ═══════════ -->
+  <section id="safety" aria-labelledby="safety-h">
+    <div class="zv-container">
+      <div class="zv-center zv-reveal">
+        <p class="zv-eyebrow">Границы</p>
+        <h2 class="zv-h2" id="safety-h">Бот работает в согласованных границах</h2>
+        <p class="zv-sub">Чтобы обзвон не сжёг базу и не бесил ваших клиентов — границы фиксируются до запуска, а не после жалоб.</p>
+      </div>
+      <div class="zv-safety-grid">
+        <div class="zv-safety-item zv-reveal"><span class="zv-safety-check">✓</span><p>Утверждённый сценарий<small>бот говорит только то, что согласовано</small></p></div>
+        <div class="zv-safety-item zv-reveal"><span class="zv-safety-check">✓</span><p>Стоп-фразы и «не звоните мне»<small>контакт сразу попадает в стоп-лист</small></p></div>
+        <div class="zv-safety-item zv-reveal"><span class="zv-safety-check">✓</span><p>Передача человеку<small>сложные и эмоциональные разговоры уходят менеджеру</small></p></div>
+        <div class="zv-safety-item zv-reveal"><span class="zv-safety-check">✓</span><p>Тестовые звонки до запуска<small>вы слышите бота раньше ваших клиентов</small></p></div>
+        <div class="zv-safety-item zv-reveal"><span class="zv-safety-check">✓</span><p>Ограниченный объём пилота<small>без массовой заливки всей базы</small></p></div>
+        <div class="zv-safety-item zv-reveal"><span class="zv-safety-check">✓</span><p>Журнал звонков<small>записи и транскрипты по согласованной модели</small></p></div>
+        <div class="zv-safety-item zv-reveal"><span class="zv-safety-check">✓</span><p>Кампанию можно остановить<small>в любой момент, одним решением</small></p></div>
+        <div class="zv-safety-item zv-reveal"><span class="zv-safety-check">✓</span><p>Проверка базы и согласий<small>работаем только с проверенными базами и основаниями</small></p></div>
+      </div>
+      <div class="zv-disclosure zv-reveal">
+        <h3>Будет ли клиент понимать, что говорит с AI?</h3>
+        <p>Модель раскрытия согласуется под сценарий, базу и требования клиента. Мы не строим коммуникацию на обмане: задача бота — корректно обработать типовой сценарий и передать человеку сложный разговор.</p>
+      </div>
+      <p class="zv-compliance-note zv-reveal">Для рекламных и холодных звонков отдельно проверяются источник базы, согласия и допустимость сценария (152-ФЗ «О персональных данных», 38-ФЗ «О рекламе»). Информация на сайте не является юридической консультацией.</p>
+      <div class="zv-center" style="margin-top:32px;">
+        <a href="#lead-form" class="btn-secondary zv-reveal" data-track="voice_scenario_review_click">Проверить сценарий на риски</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ RESULT HANDOFF ═══════════ -->
+  <section id="result" class="zv-contrast" aria-labelledby="result-h">
+    <div class="zv-container">
+      <div class="zv-center zv-reveal">
+        <p class="zv-eyebrow">Результат</p>
+        <h2 class="zv-h2" id="result-h">После звонка остаётся понятное действие</h2>
+        <p class="zv-sub">Не «слушайте записи в кабинете», а готовый статус и задача там, где вы уже работаете.</p>
+      </div>
+      <div class="zv-result-flow zv-reveal" aria-label="Путь результата звонка">
+        <span class="zv-flow-node">Звонок</span>
+        <span class="zv-flow-arrow" aria-hidden="true">→</span>
+        <span class="zv-flow-node">Ответ клиента</span>
+        <span class="zv-flow-arrow" aria-hidden="true">→</span>
+        <span class="zv-flow-node">Статус</span>
+        <span class="zv-flow-arrow" aria-hidden="true">→</span>
+        <span class="zv-flow-node">Транскрипт</span>
+        <span class="zv-flow-arrow" aria-hidden="true">→</span>
+        <span class="zv-flow-node">Задача менеджеру</span>
+        <span class="zv-flow-arrow" aria-hidden="true">→</span>
+        <span class="zv-flow-node zv-flow-final">CRM / таблица / Telegram</span>
+      </div>
+      <figure class="zv-figure zv-reveal" style="margin:0 auto; max-width:860px;">
+        <img src="assets/img/voice-handoff-dashboard-v1.jpg" alt="Иллюстрация: как выглядит результат звонка — аудио, транскрипт, интеграции и статусы" loading="lazy" width="1456" height="1092">
+        <figcaption class="zv-mock-label">демо-макет, не личный кабинет</figcaption>
+      </figure>
+      <div class="zv-integrations">
+        <div class="zv-integration-col zv-reveal">
+          <h4>Типовое</h4>
+          <ul><li>Telegram</li><li>Google Sheets</li><li>Webhook / API</li></ul>
+        </div>
+        <div class="zv-integration-col zv-reveal">
+          <h4>После аудита</h4>
+          <ul><li>amoCRM</li><li>Bitrix24</li></ul>
+        </div>
+        <div class="zv-integration-col zv-reveal">
+          <h4>Custom</h4>
+          <ul><li>Нестандартные CRM</li><li>Сложная телефония</li></ul>
+        </div>
+      </div>
+      <p class="zv-result-mark zv-reveal">Готовность интеграций подтверждается перед пилотом.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════ PILOT OFFER (SB7: успех) ═══════════ -->
+  <section id="pilot" class="zv-pilot" aria-labelledby="pilot-h">
+    <div class="zv-container">
+      <div class="zv-center zv-reveal">
+        <p class="zv-eyebrow">Пилот</p>
+        <h2 class="zv-h2" id="pilot-h">Начните с пилота, а не с большого внедрения</h2>
+        <p class="zv-sub">Мы не предлагаем сразу грузить всю базу. Сначала ограниченный сценарий, тест и понятные выводы: масштабировать, доработать — или честно не запускать.</p>
+      </div>
+      <div class="zv-pilot-grid">
+        <div class="zv-pilot-box zv-reveal">
+          <h3>Что входит в пилот</h3>
+          <ul>
+            <li>1 утверждённый сценарий</li>
+            <li>Короткий бриф</li>
+            <li>Демо-запись или тестовый звонок</li>
+            <li>Ограниченный объём контактов</li>
+            <li>1–2 итерации правок</li>
+            <li>Отчёт по статусам</li>
+            <li>Рекомендация: масштабировать / доработать / не запускать</li>
+          </ul>
+          <a href="#lead-form" class="btn-primary" data-track="voice_pilot_request_click">Обсудить пилот</a>
+        </div>
+        <div class="zv-reveal">
+          <figure class="zv-figure" style="margin:0;">
+            <img src="assets/img/voice-pilot-report-v1.jpg" alt="Иллюстрация: пример отчёта пилота с метриками звонков" loading="lazy" width="1585" height="991">
+            <figcaption class="zv-mock-label">пример отчёта пилота · демо-макет</figcaption>
+          </figure>
+          <h3 style="font:700 17px/1.3 var(--font-sans); color:var(--text-ink); margin:26px 0 0;">Что считаем на пилоте</h3>
+          <div class="zv-metrics">
+            <span class="zv-metric-chip">контактов обработано</span>
+            <span class="zv-metric-chip">доля дозвона</span>
+            <span class="zv-metric-chip">доля отказов</span>
+            <span class="zv-metric-chip">доля заинтересованных</span>
+            <span class="zv-metric-chip">передано менеджеру</span>
+            <span class="zv-metric-chip">часов рутины снято</span>
+            <span class="zv-metric-chip">какие ветки доработать</span>
+          </div>
+          <p class="zv-disclaimer">Расчёт пилота — предварительная оценка, не гарантия продаж или окупаемости.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ ROADMAP STRIP ═══════════ -->
+  <section class="zv-roadmap" aria-label="Планы продукта">
+    <div class="zv-container">
+      <div class="zv-roadmap-card zv-reveal">
+        <div class="zv-roadmap-text">
+          <h3>Скоро: кнопка «Позвонить AI-боту»</h3>
+          <p>Следующий шаг продукта — кнопка, по которой бот сам позвонит вам для тестового диалога. Сейчас мы показываем демо-запись и можем подготовить тестовый сценарий под вашу задачу.</p>
+        </div>
+        <a href="#lead-form" class="btn-secondary" data-track="voice_scenario_review_click">Получить демо под сценарий</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FAQ (SB7: возражения) ═══════════ -->
+  <section id="faq" aria-labelledby="faq-h">
+    <div class="zv-container">
+      <div class="zv-center zv-reveal">
+        <p class="zv-eyebrow">FAQ</p>
+        <h2 class="zv-h2" id="faq-h">Частые вопросы</h2>
+      </div>
+      <div class="zv-faq-list">
+        <details class="zv-faq-item zv-reveal">
+          <summary>Можно ли обзванивать холодную базу?</summary>
+          <div class="zv-faq-body">Только после проверки источника базы, согласий и сценария. Рекламные звонки требуют отдельной правовой проверки.</div>
+        </details>
+        <details class="zv-faq-item zv-reveal">
+          <summary>Бот правда похож на человека?</summary>
+          <div class="zv-faq-body">Голос звучит естественно, но качество лучше оценивать на демо. Мы не обещаем обмануть клиента и не строим сценарии на скрытии рисков.</div>
+        </details>
+        <details class="zv-faq-item zv-reveal">
+          <summary>Что если клиент попросит больше не звонить?</summary>
+          <div class="zv-faq-body">Бот фиксирует отказ и стоп-фразу, контакт попадает в стоп-лист по согласованной модели.</div>
+        </details>
+        <details class="zv-faq-item zv-reveal">
+          <summary>Что если бот не знает ответ?</summary>
+          <div class="zv-faq-body">Он не выдумывает, а фиксирует вопрос и передаёт менеджеру.</div>
+        </details>
+        <details class="zv-faq-item zv-reveal">
+          <summary>Можно ли подключить CRM?</summary>
+          <div class="zv-faq-body">Типовые варианты обсуждаются на старте, нестандартные — после аудита.</div>
+        </details>
+        <details class="zv-faq-item zv-reveal">
+          <summary>Сколько занимает запуск?</summary>
+          <div class="zv-faq-body">Сначала сценарий и демо, затем пилот. Срок зависит от задачи, базы и интеграций.</div>
+        </details>
+        <details class="zv-faq-item zv-reveal">
+          <summary>Будут ли записи и транскрипты?</summary>
+          <div class="zv-faq-body">Да, если это входит в согласованную модель хранения и обработки данных.</div>
+        </details>
+        <details class="zv-faq-item zv-reveal">
+          <summary>Кому бот не подойдёт?</summary>
+          <div class="zv-faq-body">Сложные консультации, юридически рискованные базы, сценарии без понятного результата и ситуации, где нужен экспертный человек.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FINAL FORM (SB7: призыв к действию) ═══════════ -->
+  <section id="lead-form" class="zv-form-section" aria-labelledby="form-h">
+    <div class="zv-container">
+      <div class="zv-center zv-reveal">
+        <p class="zv-eyebrow">Разбор сценария</p>
+        <h2 class="zv-h2" id="form-h">Разберём, какие звонки в вашем бизнесе можно отдать AI-боту</h2>
+        <p class="zv-sub">Без обещаний «заменим отдел продаж». Посмотрим вашу задачу, ограничения и покажем, с какого пилота разумно начать.</p>
+      </div>
+      <div class="zv-form-grid">
+        <div class="zv-lead-form zv-reveal">
+          <form id="zv-lead-form" novalidate>
+            <div class="zv-form-row">
+              <div class="zv-field">
+                <label for="zv-name">Имя <span>*</span></label>
+                <input id="zv-name" name="name" type="text" autocomplete="name" required placeholder="Как к вам обращаться">
+              </div>
+              <div class="zv-field">
+                <label for="zv-phone">Телефон <span>*</span></label>
+                <input id="zv-phone" name="phone" type="tel" autocomplete="tel" required placeholder="+7 (___) ___-__-__">
+              </div>
+            </div>
+            <div class="zv-form-row">
+              <div class="zv-field">
+                <label for="zv-company">Компания</label>
+                <input id="zv-company" name="company" type="text" autocomplete="organization" placeholder="Название компании">
+              </div>
+              <div class="zv-field">
+                <label for="zv-niche">Ниша</label>
+                <input id="zv-niche" name="niche" type="text" placeholder="Например: клиника, образование">
+              </div>
+            </div>
+            <div class="zv-form-row">
+              <div class="zv-field">
+                <label for="zv-task">Какие звонки хотите автоматизировать</label>
+                <select id="zv-task" name="task">
+                  <option value="">Выберите…</option>
+                  <option>Первичный обзвон базы</option>
+                  <option>Подтверждения и напоминания</option>
+                  <option>Ответы по скрипту</option>
+                  <option>Пропущенные обращения</option>
+                  <option>HR / опросы</option>
+                  <option>Другое / не знаю — подскажите</option>
+                </select>
+              </div>
+              <div class="zv-field">
+                <label for="zv-base">Есть ли база для обзвона</label>
+                <select id="zv-base" name="base">
+                  <option value="">Выберите…</option>
+                  <option>Да, своя клиентская база</option>
+                  <option>Частично, надо проверять</option>
+                  <option>Базы нет</option>
+                </select>
+              </div>
+            </div>
+            <div class="zv-field">
+              <label for="zv-result">Куда отдавать результат</label>
+              <select id="zv-result" name="result_channel">
+                <option value="">Выберите…</option>
+                <option>Telegram</option>
+                <option>Google Таблица</option>
+                <option>CRM</option>
+                <option>Обсудим на разборе</option>
+              </select>
+            </div>
+            <div class="zv-field">
+              <label for="zv-comment">Комментарий</label>
+              <textarea id="zv-comment" name="comment" placeholder="Кратко опишите задачу и сценарий"></textarea>
+            </div>
+            <button type="submit" class="btn-primary zv-form-submit" id="zv-submit">Получить разбор и демо</button>
+            <p class="zv-form-msg" id="zv-form-msg" role="alert"></p>
+            <p class="zv-form-consent">Нажимая кнопку, вы соглашаетесь на <a href="https://betaline-ai.ru/legal/policy.html" target="_blank" rel="noopener">обработку персональных данных</a> и контакт по заявке.</p>
+          </form>
+          <div class="zv-form-success" id="zv-form-success">
+            <div class="zv-success-icon">✅</div>
+            <h3>Спасибо! Получили заявку</h3>
+            <p>Свяжемся, чтобы разобрать сценарий и показать демо.</p>
+          </div>
+        </div>
+        <aside class="zv-alt-channels zv-reveal" aria-label="Другие способы связи">
+          <a class="zv-alt-card" href="https://t.me/Andrei_Stanislavovich" target="_blank" rel="noopener noreferrer" data-track="voice_telegram_click">
+            <span class="zv-alt-icon">💬</span>
+            <span><b>Написать оператору</b><small>Telegram, живой человек</small></span>
+          </a>
+          <a class="zv-alt-card" href="https://t.me/BetalineAI_bot" target="_blank" rel="noopener noreferrer" data-track="voice_telegram_click">
+            <span class="zv-alt-icon">🤖</span>
+            <span><b>Попробовать нашего бота</b><small>@BetalineAI_bot в Telegram</small></span>
+          </a>
+          <a class="zv-alt-card" href="tel:88002001849" data-track="voice_phone_click">
+            <span class="zv-alt-icon">📞</span>
+            <span><b>8 800 200-18-49</b><small>бесплатно по России</small></span>
+          </a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <footer class="zv-footer">
+    <div class="zv-container">
+      <div class="zv-footer-grid">
+        <div>
+          <span class="zv-logo">BetaLine<span class="zv-logo-dot">.</span> <span class="zv-logo-badge">Voice AI</span></span>
+          <p class="zv-footer-blurb">Голосовой AI-бот для бизнеса. Пилот по одному утверждённому сценарию: демо, проверка, контролируемый запуск.</p>
+        </div>
+        <div>
+          <h4>Разделы</h4>
+          <ul>
+            <li><a href="#scenarios">Демо</a></li>
+            <li><a href="#tasks">Задачи</a></li>
+            <li><a href="#plan">Как запускаем</a></li>
+            <li><a href="#safety">Безопасность</a></li>
+            <li><a href="#pilot">Пилот</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Контакты</h4>
+          <ul>
+            <li><a href="tel:88002001849" data-track="voice_phone_click">8 800 200-18-49</a></li>
+            <li><a href="https://t.me/Andrei_Stanislavovich" target="_blank" rel="noopener noreferrer" data-track="voice_telegram_click">Telegram оператора →</a></li>
+            <li><a href="https://t.me/BetalineAI_bot" target="_blank" rel="noopener noreferrer" data-track="voice_telegram_click">@BetalineAI_bot</a></li>
+            <li><a href="https://betaline-ai.ru" target="_blank" rel="noopener">Основной сайт BetaLine AI</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="zv-footer-bottom">
+        <span>© 2026 BetaLine AI. Все права защищены.</span>
+        <a href="https://betaline-ai.ru/legal/policy.html" target="_blank" rel="noopener">Политика обработки персональных данных</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════ Sticky mobile CTA ═══════════ -->
+  <div class="zv-sticky-cta" id="zv-sticky-cta" hidden>
+    <span>Разбор сценария + демо-запись</span>
+    <a href="#lead-form" class="btn-primary" data-track="voice_scenario_review_click">Получить разбор</a>
+  </div>
+
+  <!-- ═══════════ Exit-intent ═══════════ -->
+  <dialog id="zv-exit-dialog" aria-modal="true" aria-labelledby="zv-exit-title">
+    <div class="zv-exit-inner">
+      <button type="button" class="zv-exit-close" data-close-exit aria-label="Закрыть">×</button>
+      <p class="zv-exit-heading" id="zv-exit-title">Подождите!</p>
+      <p class="zv-exit-body">Разберём ваш сценарий звонков и пришлём демо-запись — бесплатно и без обязательств.</p>
+      <button type="button" class="btn-primary zv-exit-cta" data-exit-cta>Получить разбор и демо →</button>
+    </div>
+  </dialog>
+
+  <!-- ═══════════ BetaLine Chat Widget (1:1 с основного сайта) ═══════════ -->
+  <button id="bl-chat-btn" onclick="toggleChat()" aria-label="Открыть чат">
+      <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+      <div class="bl-badge"></div>
+  </button>
+  <div id="bl-chat-window">
+      <div id="bl-chat-header">
+          <div class="bl-avatar">B</div>
+          <div class="bl-info">
+              <div style="font-size:16px;font-weight:700;margin:0;">BetaLine AI</div>
+              <span>Онлайн</span>
+          </div>
+          <button class="bl-close" onclick="toggleChat()">&times;</button>
+      </div>
+      <div id="bl-chat-messages"></div>
+      <div class="bl-quick-actions" id="bl-quick-actions">
+          <button class="bl-quick-btn" onclick="blQuick('Сколько стоит голосовой AI-бот?')">Узнать стоимость</button>
+          <button class="bl-quick-btn" onclick="blQuick('Как работает голосовой бот для обзвона?')">Как работает?</button>
+          <button class="bl-quick-btn" onclick="blShowCallback()">Обратный звонок</button>
+      </div>
+      <div id="bl-callback-form">
+          <input type="text" id="bl-cb-name" placeholder="Ваше имя">
+          <input type="tel" id="bl-cb-phone" placeholder="+7 (___) ___-__-__">
+          <button onclick="blSendCallback()">Заказать звонок</button>
+      </div>
+      <div id="bl-chat-input-wrap">
+          <input type="text" id="bl-widget-chat-input" placeholder="Напишите любой вопрос..." onkeydown="if(event.key==='Enter')blSend()">
+          <button id="bl-chat-send" onclick="blSend()" aria-label="Отправить">
+              <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </button>
+      </div>
+      <div id="bl-chat-footer">Сделано в <a href="https://t.me/BetalineAI_bot" target="_blank" rel="noopener noreferrer">BetaLine AI</a></div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
