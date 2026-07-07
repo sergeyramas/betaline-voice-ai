@@ -1381,3 +1381,19 @@ section { padding: clamp(64px, 9vw, 110px) 0; }
   /* когда виден sticky CTA — чат приподнимается над ним */
   body.zv-sticky-visible #bl-chat-btn { bottom: 78px; }
 }
+
+/* ── Codex review: тёплая ретокенизация чат-виджета (логика 1:1, цвета — бренд) ── */
+.bl-msg.bot { background: var(--bg-warm, #FFF7ED); color: var(--text-ink, #1A1A1A); }
+.bl-msg.bl-typing { color: var(--text-mute, #6B7280); }
+.bl-quick-btn { border-color: var(--orange-soft, #FED7AA); color: var(--text-body, #374151); background: #fff; }
+.bl-quick-btn:hover { border-color: var(--orange, #F97316); color: var(--orange-dark, #EA580C); }
+#bl-chat-input-wrap { border-top-color: var(--orange-tint, #FFEDD5); }
+#bl-widget-chat-input, #bl-chat-input { border-color: var(--orange-soft, #FED7AA); }
+#bl-widget-chat-input:focus, #bl-chat-input:focus { border-color: var(--orange, #F97316); }
+#bl-callback-form input { border-color: var(--orange-soft, #FED7AA); }
+#bl-chat-footer { border-top-color: var(--orange-tint, #FFEDD5); color: var(--text-faint, #9CA3AF); }
+
+/* ── Codex review: на мобиле FAB скрыт и когда видна форма заявки ── */
+@media (max-width: 640px) {
+  body.zv-form-visible #bl-chat-btn { opacity: 0; pointer-events: none; transform: scale(0.6); }
+}

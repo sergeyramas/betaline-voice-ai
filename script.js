@@ -104,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (formSection) {
       new IntersectionObserver(function (entries) {
         entries.forEach(function (e) { formVisible = e.isIntersecting; });
+        document.body.classList.toggle('zv-form-visible', formVisible);
         updateSticky();
       }, { threshold: 0.1 }).observe(formSection);
     }
