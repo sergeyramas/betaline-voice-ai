@@ -74,6 +74,17 @@ document.addEventListener('DOMContentLoaded', function () {
     d.addEventListener('toggle', function () { if (d.open) zvTrack('voice_faq_open'); });
   });
 
+  /* ── Chat FAB на мобиле: не перекрывать hero CTA до скролла ── */
+  var chatFab = document.getElementById('bl-chat-btn');
+  function zvFabGate() {
+    if (!chatFab) return;
+    var isMobile = window.innerWidth <= 640;
+    chatFab.classList.toggle('zv-fab-wait', isMobile && window.scrollY < 300);
+  }
+  zvFabGate();
+  window.addEventListener('scroll', zvFabGate, { passive: true });
+  window.addEventListener('resize', zvFabGate);
+
   /* ── Sticky mobile CTA: показываем после hero, прячем на форме ── */
   var stickyCta = document.getElementById('zv-sticky-cta');
   var hero = document.getElementById('zv-hero');
@@ -83,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateSticky() {
       var show = !heroVisible && !formVisible;
       stickyCta.classList.toggle('on', show);
+      document.body.classList.toggle('zv-sticky-visible', show);
       if (show) stickyCta.removeAttribute('hidden'); else stickyCta.setAttribute('hidden', '');
     }
     new IntersectionObserver(function (entries) {
