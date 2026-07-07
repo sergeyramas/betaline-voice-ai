@@ -1,18 +1,19 @@
 /* ============================================================
-   BetaLine Voice AI — landing interactions
+   BetaLine Voice AI — landing interactions (rework v2)
    Формы и виджеты наследуют боевой код betaline-ai.ru.
    ============================================================ */
 
-/* ── Analytics helper (события из спека §9) ── */
+/* ── Analytics helper ── */
 function zvTrack(name, params) {
   try {
     if (typeof ym !== 'undefined') ym(108480715, 'reachGoal', name);
     if (window.va) window.va('event', { name: name, data: params || {} });
     if (window.gtag) window.gtag('event', name, params || {});
-  } catch (_) { /* analytics is best-effort */ }
+  } catch (_) { /* best-effort */ }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ── data-track клики ── */
   document.querySelectorAll('[data-track]').forEach(function (el) {
@@ -25,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     navbar && navbar.classList.toggle('scrolled', window.scrollY > 8);
   }, { passive: true });
 
-  /* ── Burger / mobile menu ── */
+  /* ── Burger ── */
   var burger = document.getElementById('zv-burger');
   var mobileMenu = document.getElementById('zv-mobile-menu');
   if (burger && mobileMenu) {
@@ -42,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ── Reveal on scroll ── */
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var revealEls = document.querySelectorAll('.zv-reveal');
   if (reduced || !('IntersectionObserver' in window)) {
     revealEls.forEach(function (el) { el.classList.add('visible'); });
@@ -58,6 +58,181 @@ document.addEventListener('DOMContentLoaded', function () {
     revealEls.forEach(function (el) { io.observe(el); });
   }
 
+  /* ════════ HERO: живая карточка звонка (демо-макет, цикл) ════════ */
+  (function () {
+    var transcript = document.getElementById('zv-transcript');
+    var status = document.getElementById('zv-live-status');
+    var eq = document.getElementById('zv-eq');
+    var pipeSteps = document.querySelectorAll('.zv-pipe-step');
+    if (!transcript || !status) return;
+
+    var SCRIPT = [
+      { who: 'bot',    text: 'Добрый день! Меня зовут Анна, компания BetaLine. Удобно сейчас говорить?', pipe: 0 },
+      { who: 'client', text: 'Да, слушаю.', pipe: 1 },
+      { who: 'bot',    text: 'Мы помогаем автоматизировать первичные звонки по согласованному сценарию. Это может быть интересно?', pipe: 1 },
+      { who: 'client', text: 'Да, расскажите подробнее.', pipe: 2 },
+      { who: 'bot',    text: 'Отлично! Задам пару вопросов и передам диалог менеджеру.', pipe: 3 },
+      { who: 'final',  text: 'Заинтересован → статус и транскрипт переданы в CRM / Telegram', pipe: 4 }
+    ];
+
+    function setPipe(idx, done) {
+      pipeSteps.forEach(function (s, i) {
+        s.classList.toggle('on', i === idx && !done);
+        s.classList.toggle('done', i < idx || done);
+      });
+    }
+
+    function renderStatic() {
+      SCRIPT.forEach(function (line) {
+        var el = document.createElement('div');
+        el.className = 'zv-msg ' + line.who + ' show';
+        el.textContent = line.text;
+        transcript.appendChild(el);
+      });
+      setPipe(4, true);
+      status.textContent = 'передано менеджеру';
+      status.classList.add('done');
+      eq && eq.classList.add('idle');
+    }
+
+    if (reduced) { renderStatic(); return; }
+
+    var idx = 0;
+    var timer = null;
+
+    function step() {
+      if (document.hidden) { timer = setTimeout(step, 1200); return; }
+      if (idx >= SCRIPT.length) {
+        timer = setTimeout(function () {
+          transcript.innerHTML = '';
+          status.textContent = 'идёт разговор';
+          status.classList.remove('done');
+          eq && eq.classList.remove('idle');
+          setPipe(0, false);
+          idx = 0;
+          timer = setTimeout(step, 700);
+        }, 4200);
+        return;
+      }
+      var line = SCRIPT[idx];
+      var el = document.createElement('div');
+      el.className = 'zv-msg ' + line.who;
+      el.textContent = line.text;
+      transcript.appendChild(el);
+      requestAnimationFrame(function () { requestAnimationFrame(function () { el.classList.add('show'); }); });
+      while (transcript.children.length > 4) transcript.removeChild(transcript.firstChild);
+
+      if (line.who === 'final') {
+        setPipe(4, true);
+        status.textContent = 'передано менеджеру';
+        status.classList.add('done');
+        eq && eq.classList.add('idle');
+      } else {
+        setPipe(line.pipe, false);
+      }
+      idx += 1;
+      timer = setTimeout(step, line.who === 'final' ? 400 : 1900);
+    }
+    timer = setTimeout(step, 900);
+  })();
+
+  /* ════════ Side dot-nav ════════ */
+  (function () {
+    var nav = document.getElementById('zv-dotnav');
+    if (!nav || !('IntersectionObserver' in window)) return;
+    var links = Array.from(nav.querySelectorAll('a'));
+    var map = {};
+    links.forEach(function (a) { map[a.getAttribute('data-section')] = a; });
+    var sio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          links.forEach(function (a) { a.classList.remove('active'); });
+          var link = map[e.target.id];
+          link && link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    Object.keys(map).forEach(function (id) {
+      var sec = document.getElementById(id);
+      sec && sio.observe(sec);
+    });
+  })();
+
+  /* ════════ Plan scroll-spy (паттерн #sb-plan основного сайта) ════════ */
+  (function () {
+    var steps = Array.from(document.querySelectorAll('.zv-ps-step'));
+    var fill = document.getElementById('zv-ps-fill');
+    var track = document.getElementById('zv-ps-track');
+    var container = document.getElementById('zv-planspy-steps');
+    if (!steps.length || !fill || !container) return;
+
+    function handle() {
+      var lastDot = steps[steps.length - 1].querySelector('.zv-ps-dot');
+      var cTop = container.getBoundingClientRect().top;
+      if (lastDot && track) track.style.height = (lastDot.getBoundingClientRect().top - cTop + 10) + 'px';
+
+      var triggerY = window.innerHeight * (window.innerWidth <= 900 ? 0.7 : 0.5);
+      var activeIdx = 0, minDist = Infinity;
+      steps.forEach(function (s, i) {
+        var r = s.getBoundingClientRect();
+        var d = Math.abs(r.top + r.height / 2 - triggerY);
+        if (d < minDist) { minDist = d; activeIdx = i; }
+      });
+      steps.forEach(function (s, i) { s.classList.toggle('is-active', i === activeIdx); });
+      for (var i = 1; i <= steps.length; i++) {
+        var img = document.getElementById('zv-ps-img-' + i);
+        img && img.classList.toggle('is-active', i === activeIdx + 1);
+      }
+      var dot = steps[activeIdx].querySelector('.zv-ps-dot');
+      if (dot) fill.style.height = (dot.getBoundingClientRect().top - cTop + 10) + 'px';
+    }
+    window.addEventListener('scroll', handle, { passive: true });
+    window.addEventListener('resize', handle);
+    handle();
+  })();
+
+  /* ════════ Tasks: показать ещё ════════ */
+  (function () {
+    var btn = document.getElementById('zv-tasks-more');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.zv-task-extra').forEach(function (c) { c.removeAttribute('hidden'); });
+      btn.style.display = 'none';
+    });
+  })();
+
+  /* ════════ FAQ: hover-раскрытие как на основном сайте ════════ */
+  (function () {
+    var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!fine) return; // на тач-устройствах остаётся клик
+    document.querySelectorAll('.zv-faq-item').forEach(function (d) {
+      d.addEventListener('mouseenter', function () { d.open = true; });
+      d.addEventListener('mouseleave', function () { d.open = false; });
+    });
+  })();
+  document.querySelectorAll('.zv-faq-item').forEach(function (d) {
+    d.addEventListener('toggle', function () { if (d.open) zvTrack('voice_faq_open'); });
+  });
+
+  /* ════════ Result flow: бегущий активный узел ════════ */
+  (function () {
+    var flow = document.getElementById('zv-result-flow');
+    if (!flow || reduced) return;
+    var nodes = Array.from(flow.querySelectorAll('.zv-flow-node'));
+    var i = 0, started = false;
+    function tick() {
+      nodes.forEach(function (n, j) { n.classList.toggle('live', j === i); });
+      i = (i + 1) % nodes.length;
+    }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting && !started) { started = true; tick(); setInterval(tick, 1300); }
+        });
+      }, { threshold: 0.4 }).observe(flow);
+    }
+  })();
+
   /* ── Market contrast view event ── */
   var contrast = document.getElementById('approach');
   if (contrast && 'IntersectionObserver' in window) {
@@ -69,12 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
     cio.observe(contrast);
   }
 
-  /* ── FAQ open event ── */
-  document.querySelectorAll('.zv-faq-item').forEach(function (d) {
-    d.addEventListener('toggle', function () { if (d.open) zvTrack('voice_faq_open'); });
-  });
-
-  /* ── Chat FAB на мобиле: не перекрывать hero CTA до скролла ── */
+  /* ── Chat FAB на мобиле: не перекрывать hero CTA / форму ── */
   var chatFab = document.getElementById('bl-chat-btn');
   function zvFabGate() {
     if (!chatFab) return;
@@ -85,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('scroll', zvFabGate, { passive: true });
   window.addEventListener('resize', zvFabGate);
 
-  /* ── Sticky mobile CTA: показываем после hero, прячем на форме ── */
+  /* ── Sticky mobile CTA ── */
   var stickyCta = document.getElementById('zv-sticky-cta');
   var hero = document.getElementById('zv-hero');
   var formSection = document.getElementById('lead-form');
@@ -110,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  /* ── Exit-intent (механика основного сайта) ── */
+  /* ── Exit-intent ── */
   var exitDialog = document.getElementById('zv-exit-dialog');
   if (exitDialog && typeof exitDialog.showModal === 'function') {
     function closeExit() { exitDialog.close(); }
@@ -133,12 +303,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  /* ── Lead form → POST /api/lead (боевой endpoint основного сайта) ── */
-  var leadForm = document.getElementById('zv-lead-form');
-  var formMsg = document.getElementById('zv-form-msg');
-  var formSuccess = document.getElementById('zv-form-success');
-  var submitBtn = document.getElementById('zv-submit');
+  /* ── «Обратный звонок» плашка → чат-виджет с формой колбэка ── */
+  var cbPill = document.getElementById('zv-callback-pill');
+  if (cbPill) {
+    cbPill.addEventListener('click', function () {
+      if (typeof toggleChat === 'function' && typeof blShowCallback === 'function') {
+        var win = document.getElementById('bl-chat-window');
+        if (win && !win.classList.contains('open')) toggleChat();
+        blShowCallback();
+      }
+    });
+  }
 
+  /* ── UTM ── */
   var utm = (function () {
     var p = new URLSearchParams(location.search);
     return {
@@ -149,79 +326,137 @@ document.addEventListener('DOMContentLoaded', function () {
       utm_term: p.get('utm_term') || ''
     };
   })();
+  function utmTail() {
+    return Object.keys(utm).filter(function (k) { return utm[k]; })
+      .map(function (k) { return k + '=' + utm[k]; }).join(' ');
+  }
 
-  if (leadForm) {
-    leadForm.addEventListener('submit', async function (e) {
+  function sendLead(payload, onOk, onErr, btn) {
+    btn.disabled = true;
+    var t = btn.textContent;
+    btn.textContent = 'Отправляем…';
+    Object.assign(payload, utm, { source: 'voice-landing', intent: 'demo-call', page_variant: 'v2' });
+    fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      onOk();
+      zvTrack('voice_form_submit_success');
+    }).catch(function () {
+      onErr();
+      zvTrack('voice_form_submit_error');
+    }).finally(function () {
+      btn.disabled = false;
+      btn.textContent = t;
+    });
+  }
+
+  function validPhone(v) { return v.replace(/\D/g, '').length >= 7 || v.trim().charAt(0) === '@'; }
+
+  /* ════════ Квиз ════════ */
+  (function () {
+    var form = document.getElementById('zv-quiz-form');
+    if (!form) return;
+    var picked = { task: '', result_channel: '', options: [] };
+
+    form.querySelectorAll('.zv-quiz-chips').forEach(function (group) {
+      var key = group.getAttribute('data-quiz');
+      var multi = group.getAttribute('data-mode') === 'multi';
+      group.querySelectorAll('.zv-qchip').forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          if (multi) {
+            chip.classList.toggle('on');
+            picked.options = Array.from(group.querySelectorAll('.on')).map(function (c) { return c.textContent; });
+          } else {
+            group.querySelectorAll('.zv-qchip').forEach(function (c) { c.classList.remove('on'); });
+            chip.classList.add('on');
+            picked[key] = chip.textContent;
+          }
+        });
+      });
+    });
+
+    form.addEventListener('submit', function (e) {
       e.preventDefault();
-      formMsg.className = 'zv-form-msg';
-      formMsg.textContent = '';
+      var msg = document.getElementById('zv-quiz-msg');
+      var name = document.getElementById('zv-quiz-name');
+      var phone = document.getElementById('zv-quiz-phone');
+      msg.className = 'zv-form-msg';
+      msg.textContent = '';
+      [name, phone].forEach(function (f) { f.classList.remove('zv-invalid'); });
+      var ok = true;
+      if (!name.value.trim()) { name.classList.add('zv-invalid'); ok = false; }
+      if (!phone.value.trim() || !validPhone(phone.value)) { phone.classList.add('zv-invalid'); ok = false; }
+      if (!ok) {
+        msg.className = 'zv-form-msg error';
+        msg.textContent = 'Заполните имя и корректный телефон или Telegram.';
+        return;
+      }
+      var comment = 'Квиз: ' + [
+        picked.task && ('задача — ' + picked.task),
+        picked.result_channel && ('результат — ' + picked.result_channel),
+        picked.options.length && ('важно — ' + picked.options.join(', '))
+      ].filter(Boolean).join('; ');
+      var tail = utmTail();
+      sendLead({
+        name: name.value.trim(),
+        phone: phone.value.trim(),
+        task: picked.task,
+        result_channel: picked.result_channel,
+        comment: comment + (tail ? ' | ' + tail : '')
+      }, function () {
+        Array.from(form.children).forEach(function (el) {
+          if (el.id !== 'zv-quiz-success') el.style.display = 'none';
+        });
+        document.getElementById('zv-quiz-success').style.display = 'block';
+      }, function () {
+        msg.className = 'zv-form-msg error';
+        msg.textContent = 'Не удалось отправить. Напишите нам в Telegram или попробуйте ещё раз.';
+      }, document.getElementById('zv-quiz-submit'));
+    });
+  })();
 
+  /* ════════ Простая финальная форма ════════ */
+  (function () {
+    var leadForm = document.getElementById('zv-lead-form');
+    if (!leadForm) return;
+    leadForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var formMsg = document.getElementById('zv-form-msg');
       var name = document.getElementById('zv-name');
       var phone = document.getElementById('zv-phone');
-      var valid = true;
-      [name, phone].forEach(function (f) {
-        f.classList.remove('zv-invalid');
-        if (!f.value.trim()) { f.classList.add('zv-invalid'); valid = false; }
-      });
-      if (phone.value.trim() && phone.value.replace(/\D/g, '').length < 7) {
-        phone.classList.add('zv-invalid');
-        valid = false;
-      }
-      if (!valid) {
+      formMsg.className = 'zv-form-msg';
+      formMsg.textContent = '';
+      [name, phone].forEach(function (f) { f.classList.remove('zv-invalid'); });
+      var ok = true;
+      if (!name.value.trim()) { name.classList.add('zv-invalid'); ok = false; }
+      if (!phone.value.trim() || !validPhone(phone.value)) { phone.classList.add('zv-invalid'); ok = false; }
+      if (!ok) {
         formMsg.className = 'zv-form-msg error';
         formMsg.textContent = 'Заполните имя и корректный телефон.';
         return;
       }
-
-      submitBtn.disabled = true;
-      var btnText = submitBtn.textContent;
-      submitBtn.textContent = 'Отправляем…';
-
-      // Комментарий несёт и UTM-хвост, чтобы не менять контракт /api/lead
-      var utmTail = Object.keys(utm).filter(function (k) { return utm[k]; })
-        .map(function (k) { return k + '=' + utm[k]; }).join(' ');
       var comment = document.getElementById('zv-comment').value.trim();
-
-      var payload = {
-        source: 'voice-landing',           // hidden field: источник
-        intent: 'demo-call',               // hidden field: интент заявки
-        page_variant: 'v1',
+      var tail = utmTail();
+      sendLead({
         name: name.value.trim(),
         phone: phone.value.trim(),
-        company: document.getElementById('zv-company').value.trim(),
-        niche: document.getElementById('zv-niche').value.trim(),
-        task: document.getElementById('zv-task').value,
-        base: document.getElementById('zv-base').value,
-        result_channel: document.getElementById('zv-result').value,
-        comment: comment + (utmTail ? (comment ? ' | ' : '') + utmTail : '')
-      };
-      Object.assign(payload, utm);
-
-      try {
-        var resp = await fetch('/api/lead', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        comment: comment + (tail ? (comment ? ' | ' : '') + tail : '')
+      }, function () {
         leadForm.style.display = 'none';
-        formSuccess.style.display = 'block';
-        zvTrack('voice_form_submit_success');
-      } catch (err) {
+        document.getElementById('zv-form-success').style.display = 'block';
+      }, function () {
         formMsg.className = 'zv-form-msg error';
         formMsg.textContent = 'Не удалось отправить заявку. Напишите нам в Telegram или попробуйте ещё раз.';
-        zvTrack('voice_form_submit_error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = btnText;
-      }
+      }, document.getElementById('zv-submit'));
     });
-  }
+  })();
 });
 
 /* ============================================================
    BetaLine Chat Widget — JS 1:1 с основного сайта betaline-ai.ru
-   (адаптированы только приветственные тексты под голосовой продукт)
    ============================================================ */
 (function() {
     var chatState = {
