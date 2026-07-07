@@ -1,6 +1,6 @@
 {
   "name": "betaline-voice-ai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "BetaLine Voice AI landing — голосовой AI-бот, управляемый пилот",
   "type": "commonjs",
   "scripts": {
