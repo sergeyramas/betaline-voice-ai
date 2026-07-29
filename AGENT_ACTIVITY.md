@@ -9,6 +9,9 @@
 
 ⚠️ **Домен уже боевой:** `zvonok.betaline-ai.ru` привязан к проекту с 2026-07-29. Любой push в `main` = авто-деплой на этот адрес, а не только на `*.vercel.app`.
 
+- [2026-07-29] **claude-mac-sonnet5** (mac, session-24079abd, чат «финальная визуальная правка гарантий») — topic: `guar-img-trim-crop` — branch: `main`@284f648 — IN PROGRESS
+  Обрезка прозрачных полей вокруг фигуры в `assets/img/guarantees-shield.png` (Pillow `getbbox()` crop) + пересчёт `width`/`height` атрибутов в `index.html` и `max-width` `.zv-guar-img` в `styles.css` (десктоп + мобильный breakpoint). Файлы: `index.html`, `styles.css`, `assets/img/guarantees-shield.png`.
+
 ## Recently Completed
 
 - [2026-07-29] **claude-mac-sonnet5** (mac, session-24079abd, чат «увеличить картинку в #safety») — topic: `guar-img-resize` — branch: `main` — DONE
