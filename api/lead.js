@@ -6,6 +6,10 @@ function generateLeadId() {
   return 'L' + Date.now().toString(36) + crypto.randomBytes(3).toString('hex');
 }
 
+// A channel that no-ops because its integration isn't configured resolves with
+// SKIPPED, not undefined — Promise.allSettled must not count that as a real delivery.
+const SKIPPED = Symbol('lead-channel-skipped');
+
 module.exports = async function handler(req, res) {
   // CORS for local dev
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -51,9 +55,12 @@ module.exports = async function handler(req, res) {
     if (r.status === 'rejected') console.error(`${labels[i]} failed:`, r.reason);
   });
 
-  // Success if at least one channel delivered
-  const anySuccess = results.some(r => r.status === 'fulfilled');
-  if (!anySuccess) return res.status(500).json({ error: 'All delivery channels failed' });
+  // Success only if at least one channel actually delivered — a channel that
+  // no-op'd because it isn't configured (SKIPPED) must not count as delivery.
+  const realDeliveries = results.filter(r => r.status === 'fulfilled' && r.value !== SKIPPED);
+  if (realDeliveries.length === 0) {
+    return res.status(502).json({ error: 'Lead accepted but not delivered to any channel' });
+  }
 
   return res.status(200).json({ ok: true, lead_id: leadId });
 };
@@ -102,6 +109,7 @@ async function sendLeadCard(source, phone, fields, leadId) {
 
 // --- Google Sheets (Лиды tab) ---
 async function appendLeadSheet(source, phone, fields, leadId) {
+  if (!process.env.GOOGLE_CREDENTIALS_BASE64) return SKIPPED; // _lib/sheets no-ops silently without creds
   const dateStr = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
   const row = [
     dateStr,                                          // A: Дата
@@ -124,7 +132,7 @@ async function appendLeadSheet(source, phone, fields, leadId) {
 async function sendToCRM(source, phone, fields, leadId) {
   const pbUrl = process.env.PB_URL;
   const pbToken = process.env.PB_API_TOKEN;
-  if (!pbUrl || !pbToken) return;
+  if (!pbUrl || !pbToken) return SKIPPED;
 
   const sourceLabelMap = { quiz: 'Quiz', audit: 'Аудит', callback: 'Звонок', pricing: 'Тариф', 'url-capture': 'URL-захват', platform: 'Конструктор', 'voice-landing': 'Голосовой бот' };
   const slaDeadline = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19);
@@ -236,13 +244,13 @@ async function createSupabaseUser(contact, botConfig) {
 // --- Telegram DM: send credentials to user ---
 async function sendCredentialsViaTelegram(contact, password) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
-  if (!token) return; // graceful no-op
-  if (!password) return; // no password means Supabase was skipped
+  if (!token) return SKIPPED; // graceful no-op
+  if (!password) return SKIPPED; // no password means Supabase was skipped
 
   const phone = contact.phone || '';
   // Only attempt if contact looks like a Telegram username (starts with @)
   const username = phone.startsWith('@') ? phone.slice(1) : null;
-  if (!username) return;
+  if (!username) return SKIPPED;
 
   const text = `Привет! Твой ИИ-ассистент собирается. 🔑 Пароль: ${password}. Войди в кабинет: https://betaline-saas-landing.vercel.app/cabinet/`;
 
@@ -262,7 +270,7 @@ async function sendCredentialsViaTelegram(contact, password) {
 async function sendEmail(source, phone, fields, leadId) {
   const apiKey = process.env.RESEND_API_KEY;
   const managerEmail = process.env.MANAGER_EMAIL;
-  if (!apiKey || !managerEmail) return;
+  if (!apiKey || !managerEmail) return SKIPPED;
 
   const subjects = {
     quiz: `🧮 Новый расчёт из квиза — ${phone}`,
@@ -288,7 +296,7 @@ async function sendEmail(source, phone, fields, leadId) {
     ],
   };
 
-  if (!subjects[source] || !linesBySource[source]) return; // no email template for this source
+  if (!subjects[source] || !linesBySource[source]) return SKIPPED; // no email template for this source
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },

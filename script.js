@@ -412,7 +412,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  function validPhone(v) { return v.replace(/\D/g, '').length >= 7 || v.trim().charAt(0) === '@'; }
+  function validPhone(v) {
+    var t = v.trim();
+    if (t.charAt(0) === '@') return /^@[a-zA-Z0-9_]{3,}$/.test(t); // Telegram: @ + минимум 3 символа юзернейма
+    return t.replace(/\D/g, '').length >= 7;
+  }
 
   /* ════════ Квиз ════════ */
   (function () {
