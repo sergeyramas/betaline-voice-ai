@@ -9,10 +9,12 @@
 
 ⚠️ **Домен уже боевой:** `zvonok.betaline-ai.ru` привязан к проекту с 2026-07-29. Любой push в `main` = авто-деплой на этот адрес, а не только на `*.vercel.app`.
 
-- [2026-07-29] **claude-mac-fable5** (mac, session-24079abd, чат «независимый ревьюер pre-launch») — topic: `pre-launch-fixes-review` — branch: `landing/pre-launch-fixes` (локально, НЕ пушена) — IN PROGRESS → см. Recently Completed по завершении.
-  Финальный ревью диффа перед доменом. Правлю один найденный баг тёмной темы прямо в этой ветке (styles.css), остальное — только отчёт, без правок.
-
 ## Recently Completed
+
+- [2026-07-29] **claude-mac-fable5** (mac, session-24079abd, чат «независимый ревьюер pre-launch») — topic: `pre-launch-fixes-review` — branch: `landing/pre-launch-fixes` (локально, НЕ пушена) — DONE
+  Враждебный финальный ревью диффа `landing/pre-launch-fixes` vs `main`@6ffeede перед доменом (не доверял работе автора ветки). Проверено: api/lead.js SKIPPED-логика (8 локальных сценариев без реальных токенов — ни одного случая, где рабочий Telegram даёт 502), script.js (счётчик 108480715→111116675 grep-чисто везде, `@`-валидация 8/8), тёмная тема (Playwright 1440/375, обе темы, светлая — дефолт подтверждён, FOUC не найден), claims-policy (грязных находок нет), sitemap.xml/JSON-LD парсятся, FAQPage JSON-LD совпадает с видимым контентом 8/8, все Telegram/tel: ссылки живые, roadmap-блок скрыт и без висячих ссылок, sticky-CTA корректно скрывается при открытом мобильном меню (`body.zv-menu-open .zv-sticky-cta`).
+  **Один баг найден и исправлен:** `d2375c1` — чат-виджет (`#bl-widget-chat-input`, `#bl-cb-name`, `#bl-cb-phone`) не был ретокенизирован для тёмной темы (белый фон/чёрный текст поверх тёмной панели) — единственный пропуск в остальном полной ретокенизации. Добавлены `background:var(--bg-card); color:var(--text-ink)`, светлая тема не тронута (проверено).
+  Не трогал: push, деплой, DNS. Полный отчёт — в чате (вердикт и разбор по пунктам 1–6).
 
 - [2026-07-29 09:20 UTC] **claude-mac-fable5** (mac, session-24079abd, чат «оркестратор-аудит») — topic: `pre-launch-fixes` — branch: `landing/pre-launch-fixes` (локально, НЕ пушена, база — `main`@6ffeede) — DONE
   Предзапусковая правка перед контекстной рекламой. Коммиты (все локальные, top→bottom):
