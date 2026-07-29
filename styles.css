@@ -1566,7 +1566,14 @@ body.zv-menu-open .zv-sticky-cta { display: none !important; }
 .zv-pipe-step { flex: 1; text-align: center; font: 700 10.5px/1.2 var(--font-mono); letter-spacing: .3px; text-transform: uppercase; color: var(--text-faint); background: var(--bg-warm); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 9px 4px; transition: all var(--dur-fast); }
 .zv-pipe-step.on { color: var(--orange-dark); background: var(--orange-tint); border-color: var(--orange-soft); }
 .zv-pipe-step.done { color: var(--green-dark); background: #ECFDF5; border-color: rgba(16,185,129,.3); }
-.zv-live-label { position: static; align-self: flex-start; margin-top: 2px; max-width: calc(100% - 210px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.zv-live-label { position: static; align-self: flex-start; margin-top: 2px; }
+/* Выше 640px .zv-operator-card плавает поверх правого угла карточки (см. @media max-width:640px ниже,
+   где он становится position:static) — резервируем место и обрезаем в одну строку, чтобы подпись
+   не заезжала под карточку. На мобиле это не нужно (и white-space:nowrap там ломает ширину hero-грида
+   на 24px — см. verify-report), поэтому правило только для desktop/tablet. */
+@media (min-width: 641px) {
+  .zv-live-label { max-width: calc(100% - 210px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
 
 .zv-operator-card { position: absolute; right: -8px; bottom: -26px; display: flex; align-items: center; gap: 11px; background: var(--bg-card); border: 1px solid var(--orange-soft); border-radius: var(--r-pill); box-shadow: var(--shadow-card); padding: 9px 18px 9px 10px; transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast); animation: zvFloat 4s ease-in-out infinite; }
 .zv-operator-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-cta); }
