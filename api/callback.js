@@ -12,6 +12,6 @@ module.exports = async function handler(req, res) {
   const { name, phone } = req.body || {};
   if (!phone) return res.status(400).json({ error: 'Missing required fields' });
 
-  req.body = { source: 'callback', name, phone };
+  req.body = { source: 'voice-landing', name, phone };
   return leadHandler(req, res);
 };
