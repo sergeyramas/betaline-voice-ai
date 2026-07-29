@@ -1,9 +1,7 @@
 /* BetaLine AI — Colors & Type tokens
    Sourced from production landing (betaline-ai.ru) and DESIGN.md */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap');
+/* Шрифты подключаются через <link rel="preconnect"> + один <link rel="stylesheet">
+   в <head> index.html (перф: было 3 последовательных @import). */
 
 :root {
   /* === Surfaces === */
@@ -144,4 +142,25 @@ mark.brand-mark {
   border-radius: 6px;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
+}
+
+/* === Dark theme (opt-in, светлая — дефолт) ===
+   Активируется атрибутом data-theme="dark" на <html> (см. toggle в navbar, script.js).
+   Переопределяем только поверхностные/текстовые/бордер-токены — акцентный оранжевый
+   и семантические цвета (red/green/blue) остаются теми же во всех темах. */
+:root[data-theme="dark"] {
+  --bg-cream:   #17140F;
+  --bg-warm:    #1F1A13;
+  --bg-card:    #221C15;
+
+  --text-ink:    #F5F1E8;
+  --text-ink-2:  #F0ECE2;
+  --text-body:   #D6CFC1;
+  --text-mute:   #A79C8A;
+  --text-faint:  #7C7261;
+  --text-on-dark:#A79C8A;
+  --border:      #362D22;
+  --border-soft: rgba(255,255,255,.09);
+
+  --orange-tint: #3A2513;
 }

@@ -26,6 +26,28 @@ document.addEventListener('DOMContentLoaded', function () {
     navbar && navbar.classList.toggle('scrolled', window.scrollY > 8);
   }, { passive: true });
 
+  /* ── Тёмная тема: светлая — дефолт, выбор персистится в localStorage ── */
+  (function () {
+    var KEY = 'zv-theme';
+    var root = document.documentElement;
+    var toggles = document.querySelectorAll('[data-theme-toggle]');
+    function syncPressed(isDark) {
+      toggles.forEach(function (btn) { btn.setAttribute('aria-pressed', isDark ? 'true' : 'false'); });
+    }
+    syncPressed(root.getAttribute('data-theme') === 'dark');
+    toggles.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var isDark = root.getAttribute('data-theme') === 'dark';
+        var next = isDark ? 'light' : 'dark';
+        if (next === 'dark') root.setAttribute('data-theme', 'dark');
+        else root.removeAttribute('data-theme');
+        try { localStorage.setItem(KEY, next); } catch (e) {}
+        syncPressed(next === 'dark');
+        zvTrack('voice_theme_' + next);
+      });
+    });
+  })();
+
   /* ── Burger ── */
   var burger = document.getElementById('zv-burger');
   var mobileMenu = document.getElementById('zv-mobile-menu');
@@ -33,11 +55,13 @@ document.addEventListener('DOMContentLoaded', function () {
     burger.addEventListener('click', function () {
       var open = mobileMenu.classList.toggle('open');
       burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      document.body.classList.toggle('zv-menu-open', open);
     });
     mobileMenu.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', function () {
         mobileMenu.classList.remove('open');
         burger.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('zv-menu-open');
       });
     });
   }
@@ -326,6 +350,8 @@ document.addEventListener('DOMContentLoaded', function () {
       f && f.scrollIntoView({ behavior: 'smooth' });
       zvTrack('voice_scenario_review_click');
     });
+    var exitTg = exitDialog.querySelector('[data-exit-telegram]');
+    exitTg && exitTg.addEventListener('click', closeExit);
     exitDialog.addEventListener('click', function (e) { if (e.target === exitDialog) closeExit(); });
     var exitShownKey = 'zvExitShown';
     document.addEventListener('mouseleave', function (e) {

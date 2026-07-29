@@ -3,15 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Голосовой AI-бот для обзвона и первичных ответов — BetaLine AI</title>
-  <meta name="description" content="Запустим пилот голосового AI-бота для первичных звонков, ответов по скрипту и передачи заявок менеджеру. Демо, сценарий, пилот и результат в CRM/таблицу/Telegram.">
-  <link rel="canonical" href="https://betaline-voice-ai.vercel.app/">
+  <title>Голосовой AI-бот для бизнеса: обзвон и ответы | BetaLine</title>
+  <meta name="description" content="Пилот голосового AI-бота для бизнеса: звонки, ответы по скрипту и передача заявок менеджеру. Демо-запись, сценарий и результат в CRM или Telegram.">
+  <link rel="canonical" href="https://zvonok.betaline-ai.ru/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Голосовой AI-бот для обзвона и первичных ответов — BetaLine AI">
-  <meta property="og:description" content="Запустим пилот голосового AI-бота для первичных звонков, ответов по скрипту и передачи заявок менеджеру. Демо, сценарий, пилот и результат в CRM/таблицу/Telegram.">
-  <meta property="og:image" content="/assets/img/og-voice-ai.png">
+  <meta property="og:url" content="https://zvonok.betaline-ai.ru/">
+  <meta property="og:title" content="Голосовой AI-бот для бизнеса: обзвон и ответы | BetaLine">
+  <meta property="og:description" content="Пилот голосового AI-бота для бизнеса: звонки, ответы по скрипту и передача заявок менеджеру. Демо-запись, сценарий и результат в CRM или Telegram.">
+  <meta property="og:image" content="https://zvonok.betaline-ai.ru/assets/img/og-voice-ai.png">
   <meta property="og:locale" content="ru_RU">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Голосовой AI-бот для бизнеса: обзвон и ответы | BetaLine">
+  <meta name="twitter:description" content="Пилот голосового AI-бота для бизнеса: звонки, ответы по скрипту и передача заявок менеджеру. Демо-запись, сценарий и результат в CRM или Telegram.">
+  <meta name="twitter:image" content="https://zvonok.betaline-ai.ru/assets/img/og-voice-ai.png">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- Тёмная тема: применяем сохранённый выбор до отрисовки CSS — без этого будет вспышка светлой темы (FOUC) -->
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('zv-theme') === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Шрифты: preconnect + один запрос вместо трёх последовательных @import в saas-tokens.css -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800;900&display=swap">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "BetaLine AI",
+    "url": "https://zvonok.betaline-ai.ru/",
+    "logo": "https://zvonok.betaline-ai.ru/favicon.svg",
+    "sameAs": ["https://t.me/BetalineAI_bot", "https://betaline-ai.ru"],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+7-800-200-18-49",
+      "contactType": "sales"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Можно ли обзванивать холодную базу?", "acceptedAnswer": { "@type": "Answer", "text": "Только после проверки источника базы, согласий и сценария. Рекламные звонки требуют отдельной правовой проверки." } },
+      { "@type": "Question", "name": "Бот правда похож на человека?", "acceptedAnswer": { "@type": "Answer", "text": "Голос звучит естественно, но качество лучше оценивать на демо. Мы не обещаем обмануть клиента и не строим сценарии на скрытии рисков." } },
+      { "@type": "Question", "name": "Что если клиент попросит больше не звонить?", "acceptedAnswer": { "@type": "Answer", "text": "Бот фиксирует отказ и стоп-фразу, контакт попадает в стоп-лист по согласованной модели." } },
+      { "@type": "Question", "name": "Что если бот не знает ответ?", "acceptedAnswer": { "@type": "Answer", "text": "Он не выдумывает, а фиксирует вопрос и передаёт менеджеру." } },
+      { "@type": "Question", "name": "Можно ли подключить CRM?", "acceptedAnswer": { "@type": "Answer", "text": "Типовые варианты обсуждаются на старте, нестандартные — после аудита." } },
+      { "@type": "Question", "name": "Сколько занимает запуск?", "acceptedAnswer": { "@type": "Answer", "text": "Сначала сценарий и демо, затем пилот. Срок зависит от задачи, базы и интеграций." } },
+      { "@type": "Question", "name": "Будут ли записи и транскрипты?", "acceptedAnswer": { "@type": "Answer", "text": "Да, если это входит в согласованную модель хранения и обработки данных." } },
+      { "@type": "Question", "name": "Кому бот не подойдёт?", "acceptedAnswer": { "@type": "Answer", "text": "Сложные консультации, юридически рискованные базы, сценарии без понятного результата и ситуации, где нужен экспертный человек." } }
+    ]
+  }
+  </script>
 
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript">
@@ -55,7 +108,15 @@
       </div>
       <div class="zv-nav-right">
         <a href="tel:88002001849" class="zv-nav-phone" data-track="voice_phone_click">8 800 200-18-49</a>
-        <a href="#lead-form" class="btn-primary zv-nav-cta" data-track="voice_header_cta_click">Получить разбор</a>
+        <button type="button" class="zv-theme-toggle" data-theme-toggle aria-label="Переключить тёмную тему" aria-pressed="false">
+          <svg class="zv-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v3M12 18.5v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2.5 12h3M18.5 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+          <svg class="zv-icon-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.4 14.7A8.4 8.4 0 019.3 3.6a8.8 8.8 0 100 16.8 8.4 8.4 0 0011.1-5.7z"/></svg>
+        </button>
+        <a href="https://t.me/BetalineAI_bot" target="_blank" rel="noopener noreferrer" class="btn-primary zv-nav-cta" data-track="voice_telegram_click">
+          <svg class="zv-ic-tg zv-btn-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#fff" fill-opacity=".25"/><path d="M5.5 11.9l11.3-4.4c.52-.19.98.12.81.92l-1.92 9.06c-.14.65-.53.81-1.07.5l-2.96-2.18-1.43 1.38c-.16.16-.29.29-.6.29l.21-3.02 5.5-4.97c.24-.21-.05-.33-.37-.12l-6.8 4.28-2.93-.92c-.64-.2-.65-.64.13-.88z" fill="#fff"/></svg>
+          Telegram
+        </a>
+        <a href="#lead-form" class="btn-secondary zv-nav-cta" data-track="voice_header_cta_click">Оставить заявку</a>
         <button class="zv-burger" id="zv-burger" aria-label="Открыть меню" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -70,7 +131,13 @@
     <a href="#safety">Безопасность</a>
     <a href="#faq">FAQ</a>
     <a href="tel:88002001849" data-track="voice_phone_click">8 800 200-18-49</a>
-    <a href="#lead-form" class="btn-primary" data-track="voice_header_cta_click">Получить разбор</a>
+    <button type="button" class="zv-theme-toggle zv-theme-toggle--menu" data-theme-toggle aria-label="Переключить тёмную тему" aria-pressed="false">
+      <svg class="zv-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v3M12 18.5v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2.5 12h3M18.5 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+      <svg class="zv-icon-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.4 14.7A8.4 8.4 0 019.3 3.6a8.8 8.8 0 100 16.8 8.4 8.4 0 0011.1-5.7z"/></svg>
+      <span>Тёмная тема</span>
+    </button>
+    <a href="https://t.me/BetalineAI_bot" target="_blank" rel="noopener noreferrer" class="btn-primary" data-track="voice_telegram_click">Написать в Telegram</a>
+    <a href="#lead-form" class="btn-secondary" data-track="voice_header_cta_click">Оставить заявку</a>
   </div>
 
   <!-- ═══════════ Side dot-nav (desktop) ═══════════ -->
@@ -100,8 +167,8 @@
         <p class="zv-hero-sub">Запускаем пилот по одному утверждённому сценарию: бот звонит или отвечает по скрипту, звучит естественно, фиксирует результат и передаёт сложные разговоры человеку.</p>
         <p class="zv-redline">Сначала проверяем сценарий и показываем демо — потом запускаем обзвон.</p>
         <div class="zv-hero-ctas">
-          <a href="#lead-form" class="btn-primary" data-track="voice_scenario_review_click">Получить разбор сценария и демо-запись</a>
-          <a href="#scenarios" class="btn-secondary">Посмотреть примеры сценариев</a>
+          <a href="https://t.me/BetalineAI_bot" target="_blank" rel="noopener noreferrer" class="btn-primary" data-track="voice_telegram_click">Написать в Telegram</a>
+          <a href="#lead-form" class="btn-secondary" data-track="voice_scenario_review_click">Получить разбор сценария и демо-запись</a>
         </div>
         <div class="zv-chips" aria-label="Что умеет бот">
           <span class="zv-chip">первичный обзвон</span>
@@ -110,6 +177,7 @@
           <span class="zv-chip">результат в CRM/таблицу</span>
           <span class="zv-chip">стоп-фразы и контроль</span>
         </div>
+        <a href="#scenarios" class="zv-hero-inline-link">Посмотреть примеры сценариев →</a>
       </div>
 
       <!-- Живая карточка звонка (демо-макет) -->
@@ -607,7 +675,9 @@
   </section>
 
   <!-- ═══════════ ROADMAP STRIP ═══════════ -->
-  <section class="zv-roadmap" aria-label="Планы продукта">
+  <!-- ponytail: скрыто по решению владельца (2026-07-29, пре-запуск) — «Позвонить AI-боту» ещё не готов,
+       вернут когда появится реальный автозвонок. Разметка сохранена, чтобы включить обратно — убрать `hidden`. -->
+  <section class="zv-roadmap" aria-label="Планы продукта" hidden>
     <div class="zv-container">
       <div class="zv-roadmap-card zv-reveal">
         <div class="zv-roadmap-text">
@@ -769,8 +839,11 @@
 
   <!-- ═══════════ Sticky mobile CTA ═══════════ -->
   <div class="zv-sticky-cta" id="zv-sticky-cta" hidden>
-    <span>Разбор сценария + демо-запись</span>
-    <a href="#lead-form" class="btn-primary" data-track="voice_scenario_review_click">Получить разбор</a>
+    <a href="https://t.me/BetalineAI_bot" target="_blank" rel="noopener noreferrer" class="btn-primary" data-track="voice_telegram_click">
+      <svg class="zv-ic-tg zv-btn-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#fff" fill-opacity=".25"/><path d="M5.5 11.9l11.3-4.4c.52-.19.98.12.81.92l-1.92 9.06c-.14.65-.53.81-1.07.5l-2.96-2.18-1.43 1.38c-.16.16-.29.29-.6.29l.21-3.02 5.5-4.97c.24-.21-.05-.33-.37-.12l-6.8 4.28-2.93-.92c-.64-.2-.65-.64.13-.88z" fill="#fff"/></svg>
+      Telegram
+    </a>
+    <a href="#lead-form" class="zv-sticky-alt" data-track="voice_scenario_review_click">или заявка</a>
   </div>
 
   <!-- ═══════════ Exit-intent ═══════════ -->
@@ -779,7 +852,8 @@
       <button type="button" class="zv-exit-close" data-close-exit aria-label="Закрыть">×</button>
       <p class="zv-exit-heading" id="zv-exit-title">Подождите!</p>
       <p class="zv-exit-body">Разберём ваш сценарий звонков и пришлём демо-запись — бесплатно и без обязательств.</p>
-      <button type="button" class="btn-primary zv-exit-cta" data-exit-cta>Получить разбор и демо →</button>
+      <a href="https://t.me/BetalineAI_bot" target="_blank" rel="noopener noreferrer" class="btn-primary zv-exit-cta" data-track="voice_telegram_click" data-exit-telegram>Написать в Telegram</a>
+      <button type="button" class="zv-exit-alt" data-exit-cta>или оставить заявку в форме ↓</button>
     </div>
   </dialog>
 
