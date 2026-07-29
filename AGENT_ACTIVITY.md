@@ -9,10 +9,12 @@
 
 ⚠️ **Домен уже боевой:** `zvonok.betaline-ai.ru` привязан к проекту с 2026-07-29. Любой push в `main` = авто-деплой на этот адрес, а не только на `*.vercel.app`.
 
-- [2026-07-29, in progress] **claude-mac-sonnet5** (mac, session-24079abd) — topic: `guarantees-visual-block` — branch: `main` — файлы: `index.html` (секция `#safety`), `styles.css`, `script.js`, `assets/img/guarantees-shield.png` (новый).
-  Визуальный блок «гарантии/правила контроля» в стиле эталона `Betaline NEW V1/10_guarantees.html` (только чтение, не правится). Контент — существующий (4 правила из `#safety`), без новых обещаний. GitHub Actions auto-deploy сломан (невалидный `VERCEL_TOKEN`) — деплой руками (`vercel --prod` из репо), см. заметку выше от 2026-07-29.
-
 ## Recently Completed
+
+- [2026-07-29] **claude-mac-sonnet5** (mac, session-24079abd, чат «гарантии на voice-лендинге») — topic: `guarantees-visual-block` — branch: `main`@`48c8fb6` — DONE
+  Секция `#safety` («Четыре правила контроля вместо обещаний») переведена с плоской 2×2-сетки на двухколоночный визуальный блок в стиле эталона `Betaline NEW V1/10_guarantees.html` (только чтение референса, не правился): pill-бейдж + двухцветный заголовок + фото слева, 4 карточки-аккордеона (`<details>/<summary>`) справа. Контент не менялся — те же 4 правила, тот же текст, никаких новых обещаний; заголовок/бейдж — уже одобренные формулировки, банившаяся фраза «без мелкого шрифта» не возвращалась.
+  Файлы: `index.html`, `styles.css` (новые `.zv-guar-*`, убраны неиспользуемые `.zv-gate/.zv-gates-grid`), `script.js` (аккордеон переиспользует hover/click-паттерн `.zv-faq-item`), `assets/img/guarantees-shield.png` (новый, из эталонного `guarantees_v5.png`, 383КБ → 104КБ через `pngquant`, прозрачность сохранена). Подробности — `verify-report.md` Round 5.
+  Верификация: локально (Playwright, 1440×900 + 375×812, light+dark) — 0 console errors, 0 overflow, картинка грузится, аккордеон работает мышью и клавиатурой (`Enter` на `summary`). Деплой руками (Actions сломан, см. заметку от 2026-07-29 выше): `vercel pull/build/deploy --prebuilt --prod --scope sergeyramas-projects` → `dpl_3TCfyaV5zdig7hzE7D9f2VEqxYqa`, алиас на `zvonok.betaline-ai.ru` сработал. Повторная Playwright-проверка на живом проде (те же 4 комбинации viewport×тема) — тот же результат: 0 errors, 0 overflow, картинка и все 4 карточки на месте.
 
 - [2026-07-29 12:xx UTC] **claude-mac-fable5** (mac, session-24079abd, чат «выкат в прод») — topic: `prod-deploy-pre-launch-fixes` — branch: `main`@`126c302` (merge `landing/pre-launch-fixes`, ff) — DONE
   **Прод обновлён.** `main` смёржен с `landing/pre-launch-fixes` (9 коммитов, fast-forward, без конфликтов) и запушен в `origin/main` (`0727e5f..126c302`). Авто-деплой через GitHub Actions (`.github/workflows/deploy.yml`, ран `30450115626`) **упал** на шаге `vercel pull` — `Error: The token provided via --token argument is not valid` (секрет `VERCEL_TOKEN` в GitHub Secrets невалиден/истёк). По правилу «повтор только при транзиентной ошибке» — не ретраил, секрет не трогал (зона инфра-сессии).
