@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zvonok.betaline-ai.ru/sitemap.xml
