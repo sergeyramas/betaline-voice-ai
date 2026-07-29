@@ -9,6 +9,9 @@
 
 ⚠️ **Домен уже боевой:** `zvonok.betaline-ai.ru` привязан к проекту с 2026-07-29. Любой push в `main` = авто-деплой на этот адрес, а не только на `*.vercel.app`.
 
+- [2026-07-29] **claude-mac-fable5** (mac, session-24079abd, чат «независимый ревьюер pre-launch») — topic: `pre-launch-fixes-review` — branch: `landing/pre-launch-fixes` (локально, НЕ пушена) — IN PROGRESS → см. Recently Completed по завершении.
+  Финальный ревью диффа перед доменом. Правлю один найденный баг тёмной темы прямо в этой ветке (styles.css), остальное — только отчёт, без правок.
+
 ## Recently Completed
 
 - [2026-07-29 09:20 UTC] **claude-mac-fable5** (mac, session-24079abd, чат «оркестратор-аудит») — topic: `pre-launch-fixes` — branch: `landing/pre-launch-fixes` (локально, НЕ пушена, база — `main`@6ffeede) — DONE
