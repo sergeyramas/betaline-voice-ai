@@ -1710,7 +1710,7 @@ body.zv-menu-open .zv-sticky-cta { display: none !important; }
 .zv-guar-h2 { margin-bottom: 14px; }
 .zv-guar-accent { color: var(--orange); }
 .zv-guar-left .zv-sub { margin-bottom: 32px; }
-.zv-guar-img { max-width: 340px; width: 100%; height: auto; }
+.zv-guar-img { max-width: 420px; width: 100%; height: auto; }
 .zv-guar-cards { display: flex; flex-direction: column; gap: 16px; }
 .zv-guar-card {
   background: var(--bg-card); border: 1px solid var(--border-soft); border-radius: var(--r-xl);
