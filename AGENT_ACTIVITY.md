@@ -8,7 +8,7 @@
 ## Active
 
 - [2026-07-29 05:30 UTC] **claude-mac-opus5** (mac, session-a7be288b, чат «поиск проекта + домен») — topic: `domain-zvonok` — branch: `main` — files: `AGENT_ACTIVITY.md`, `docs/agents/incidents.md`, `.claude/settings.json` (скаффолд) — код лендинга НЕ трогаю
-- [2026-07-29 05:17 UTC] **claude-mac-fable5** (mac, session-24079abd, чат «оркестратор-аудит») — topic: `full-audit-v1` — branch: `main` — files: `index.html`, `styles.css`, `script.js` (ожидаемо, через сабагентов Opus/Sonnet) — аудит кода/юзабилити/маркетинга + поиск UX-скиллов на GitHub
+- [2026-07-29 08:40 UTC] **claude-mac-fable5** (mac, session-24079abd, чат «оркестратор-аудит») — topic: `pre-launch-fixes` — branch: `landing/pre-launch-fixes` (локально, НЕ пушится) — files: `index.html`, `styles.css`, `script.js`, `assets/css/saas-tokens.css`, `api/callback.js` (1 строка), `robots.txt`, `sitemap.xml` (новые) — предзапусковая правка перед контекстной рекламой: Метрика-сниппет, CTA-иерархия (Telegram/демо-звонок/форма), тёмная тема, SEO-база, перф шрифтов. Прод/Vercel/DNS не трогаю.
 
 **Разделение прямо сейчас:** аудит-сессия владеет кодом лендинга, доменная сессия — инфраструктурой (Vercel/DNS) и координацией. Пересечений по файлам нет.
 
