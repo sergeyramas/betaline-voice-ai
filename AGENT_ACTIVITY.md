@@ -9,6 +9,9 @@
 
 ⚠️ **Домен уже боевой:** `zvonok.betaline-ai.ru` привязан к проекту с 2026-07-29. Любой push в `main` = авто-деплой на этот адрес, а не только на `*.vercel.app`.
 
+- [2026-07-29, in progress] **claude-mac-sonnet5** (mac, session-24079abd) — topic: `guarantees-visual-block` — branch: `main` — файлы: `index.html` (секция `#safety`), `styles.css`, `script.js`, `assets/img/guarantees-shield.png` (новый).
+  Визуальный блок «гарантии/правила контроля» в стиле эталона `Betaline NEW V1/10_guarantees.html` (только чтение, не правится). Контент — существующий (4 правила из `#safety`), без новых обещаний. GitHub Actions auto-deploy сломан (невалидный `VERCEL_TOKEN`) — деплой руками (`vercel --prod` из репо), см. заметку выше от 2026-07-29.
+
 ## Recently Completed
 
 - [2026-07-29 12:xx UTC] **claude-mac-fable5** (mac, session-24079abd, чат «выкат в прод») — topic: `prod-deploy-pre-launch-fixes` — branch: `main`@`126c302` (merge `landing/pre-launch-fixes`, ff) — DONE

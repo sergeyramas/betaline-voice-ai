@@ -558,34 +558,48 @@
     </div>
   </section>
 
-  <!-- ═══════════ SAFETY — 4 ворот контроля ═══════════ -->
+  <!-- ═══════════ SAFETY — правила контроля (визуал «гарантии») ═══════════ -->
   <section id="safety" aria-labelledby="safety-h">
     <div class="zv-container">
-      <div class="zv-center zv-reveal">
-        <p class="zv-eyebrow">BetaLine AI — безопасность</p>
-        <h2 class="zv-h2" id="safety-h">Четыре правила контроля вместо обещаний</h2>
-        <p class="zv-sub">Чтобы обзвон не сжёг базу и не раздражал клиентов, заранее фиксируем четыре правила контроля.</p>
-      </div>
-      <div class="zv-gates-grid">
-        <div class="zv-gate zv-reveal">
-          <span class="zv-gate-num">01</span>
-          <h3>Сценарий и границы</h3>
-          <p>Бот говорит только то, что утверждено. Не выдумывает цены, скидки и обещания.</p>
+      <div class="zv-guar-grid">
+        <div class="zv-guar-left zv-reveal">
+          <span class="zv-guar-badge">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            BetaLine AI — безопасность
+          </span>
+          <h2 class="zv-h2 zv-guar-h2" id="safety-h">Четыре правила контроля<br><span class="zv-guar-accent">вместо обещаний</span></h2>
+          <p class="zv-sub">Чтобы обзвон не сжёг базу и не раздражал клиентов, заранее фиксируем четыре правила контроля.</p>
+          <img class="zv-guar-img" src="assets/img/guarantees-shield.png" width="1024" height="571" loading="lazy" alt="Символ контроля и защиты данных в проекте BetaLine AI">
         </div>
-        <div class="zv-gate zv-reveal">
-          <span class="zv-gate-num">02</span>
-          <h3>Стоп-фразы и стоп-лист</h3>
-          <p>«Не звоните мне» — отказ фиксируется, контакт вносится в стоп-лист по согласованной модели, разговор корректно завершается.</p>
-        </div>
-        <div class="zv-gate zv-reveal">
-          <span class="zv-gate-num">03</span>
-          <h3>Человек рядом</h3>
-          <p>Сложные и эмоциональные разговоры передаются менеджеру. Вы слышите бота раньше ваших клиентов — на тестовых звонках.</p>
-        </div>
-        <div class="zv-gate zv-reveal">
-          <span class="zv-gate-num">04</span>
-          <h3>Журнал и правила остановки</h3>
-          <p>Ограниченный объём пилота, записи и транскрипты по согласованной модели. Условия приостановки кампании фиксируются заранее.</p>
+        <div class="zv-guar-cards">
+          <details class="zv-guar-card zv-reveal">
+            <summary>
+              <span class="zv-task-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/><path d="M8 9h8M8 12.5h5"/></svg></span>
+              <span class="zv-guar-card-title">Сценарий и границы</span>
+            </summary>
+            <div class="zv-guar-card-body">Бот говорит только то, что утверждено. Не выдумывает цены, скидки и обещания.</div>
+          </details>
+          <details class="zv-guar-card zv-reveal">
+            <summary>
+              <span class="zv-task-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.4 8.4l7.2 7.2M15.6 8.4l-7.2 7.2"/></svg></span>
+              <span class="zv-guar-card-title">Стоп-фразы и стоп-лист</span>
+            </summary>
+            <div class="zv-guar-card-body">«Не звоните мне» — отказ фиксируется, контакт вносится в стоп-лист по согласованной модели, разговор корректно завершается.</div>
+          </details>
+          <details class="zv-guar-card zv-reveal">
+            <summary>
+              <span class="zv-task-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <span class="zv-guar-card-title">Человек рядом</span>
+            </summary>
+            <div class="zv-guar-card-body">Сложные и эмоциональные разговоры передаются менеджеру. Вы слышите бота раньше ваших клиентов — на тестовых звонках.</div>
+          </details>
+          <details class="zv-guar-card zv-reveal">
+            <summary>
+              <span class="zv-task-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
+              <span class="zv-guar-card-title">Журнал и правила остановки</span>
+            </summary>
+            <div class="zv-guar-card-body">Ограниченный объём пилота, записи и транскрипты по согласованной модели. Условия приостановки кампании фиксируются заранее.</div>
+          </details>
         </div>
       </div>
       <div class="zv-disclosure zv-reveal">

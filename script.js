@@ -258,17 +258,20 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   })();
 
-  /* ════════ FAQ: hover-раскрытие как на основном сайте ════════ */
+  /* ════════ FAQ + Гарантии: hover-раскрытие как на основном сайте ════════ */
   (function () {
     var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     if (!fine) return; // на тач-устройствах остаётся клик
-    document.querySelectorAll('.zv-faq-item').forEach(function (d) {
+    document.querySelectorAll('.zv-faq-item, .zv-guar-card').forEach(function (d) {
       d.addEventListener('mouseenter', function () { d.open = true; });
       d.addEventListener('mouseleave', function () { d.open = false; });
     });
   })();
   document.querySelectorAll('.zv-faq-item').forEach(function (d) {
     d.addEventListener('toggle', function () { if (d.open) zvTrack('voice_faq_open'); });
+  });
+  document.querySelectorAll('.zv-guar-card').forEach(function (d) {
+    d.addEventListener('toggle', function () { if (d.open) zvTrack('voice_guarantee_open'); });
   });
 
   /* ════════ Result flow: бегущий активный узел ════════ */
