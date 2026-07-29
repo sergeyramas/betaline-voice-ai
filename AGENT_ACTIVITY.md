@@ -7,13 +7,15 @@
 
 ## Active
 
-- [2026-07-29 08:40 UTC] **claude-mac-fable5** (mac, session-24079abd, чат «оркестратор-аудит») — topic: `pre-launch-fixes` — branch: `landing/pre-launch-fixes` (локально, НЕ пушится) — files: `index.html`, `styles.css`, `script.js`, `assets/css/saas-tokens.css`, `api/callback.js` (1 строка), `robots.txt`, `sitemap.xml` (новые) — предзапусковая правка перед контекстной рекламой: Метрика-сниппет, CTA-иерархия (Telegram/демо-звонок/форма), тёмная тема, SEO-база, перф шрифтов. Прод/Vercel/DNS не трогаю.
-
-**Разделение прямо сейчас:** аудит-сессия владеет кодом лендинга, доменная сессия — инфраструктурой (Vercel/DNS) и координацией. Пересечений по файлам нет.
-
 ⚠️ **Домен уже боевой:** `zvonok.betaline-ai.ru` привязан к проекту с 2026-07-29. Любой push в `main` = авто-деплой на этот адрес, а не только на `*.vercel.app`.
 
 ## Recently Completed
+
+- [2026-07-29 09:20 UTC] **claude-mac-fable5** (mac, session-24079abd, чат «оркестратор-аудит») — topic: `pre-launch-fixes` — branch: `landing/pre-launch-fixes` (локально, НЕ пушена, база — `main`@6ffeede) — DONE
+  Предзапусковая правка перед контекстной рекламой. Коммиты (все локальные, top→bottom):
+  `f2af388` claims-policy копирайт (гарантии/стоп-лист/«естественно»/«меньше неявок»/«послушайте бота») + фикс регрессии переполнения hero-грида на мобиле · `2ef6367` api/lead.js: честный учёт доставки лида (SKIPPED-санитайзер вместо ложного 200) + строгая валидация Telegram-контакта в script.js · `a338cc1` CTA-иерархия Telegram(#1)+форма(#2) везде, тёмная тема (светлая — дефолт), SEO/JSON-LD/og/twitter, перф шрифтов, скрыт незаконченный блок «Позвонить AI-боту» · `5b2e90e` callback.js source→voice-landing · `7facb88` robots.txt/sitemap.xml · `aff7329` Yandex.Metrika 111116675.
+  Файлы: `index.html`, `styles.css`, `script.js`, `assets/css/saas-tokens.css`, `api/lead.js`, `api/callback.js`, `robots.txt`, `sitemap.xml` (новые). Прод/Vercel/DNS не трогал.
+  Верификация: Playwright 1440×900 + 375×812, светлая+тёмная — 0 console errors, 0 layout-overflow (в т.ч. после регрессии, которую сам нашёл и починил), callback-виджет и theme-toggle работают и персистятся. Подробности — `verify-report.md`.
 
 - [2026-07-29 05:45 UTC] **claude-mac-opus5** (mac) — topic: `domain-zvonok` — DONE
   **`https://zvonok.betaline-ai.ru` живой**, HTTP 200, сертификат выпущен, отдаёт тот же билд что и `betaline-voice-ai.vercel.app` (md5 совпадает).
