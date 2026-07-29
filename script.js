@@ -6,7 +6,7 @@
 /* ── Analytics helper ── */
 function zvTrack(name, params) {
   try {
-    if (typeof ym !== 'undefined') ym(108480715, 'reachGoal', name);
+    if (typeof ym !== 'undefined') ym(111116675, 'reachGoal', name);
     if (window.va) window.va('event', { name: name, data: params || {} });
     if (window.gtag) window.gtag('event', name, params || {});
   } catch (_) { /* best-effort */ }
@@ -679,8 +679,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         chatState.history.push({ role: 'assistant', content: final.reply });
                         localStorage.setItem('bl_chat_history', JSON.stringify(chatState.history.slice(-20)));
                     }
-                    if (typeof ym !== 'undefined') ym(108480715, 'reachGoal', 'chat_message');
-                    if (final.contactDetected && typeof ym !== 'undefined') ym(108480715, 'reachGoal', 'chat_lead');
+                    if (typeof ym !== 'undefined') ym(111116675, 'reachGoal', 'chat_message');
+                    if (final.contactDetected && typeof ym !== 'undefined') ym(111116675, 'reachGoal', 'chat_lead');
                 }
                 msgsEl.scrollTop = msgsEl.scrollHeight;
             }
@@ -759,7 +759,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!r.ok) throw new Error('err');
             document.getElementById('bl-callback-form').style.display = 'none';
             blAddMsg('system', '✅ Заявка принята! Перезвоним в ближайшее время.');
-            if (typeof ym !== 'undefined') ym(108480715, 'reachGoal', 'callback_chat');
+            if (typeof ym !== 'undefined') ym(111116675, 'reachGoal', 'callback_chat');
         })
         .catch(function() {
             blAddMsg('system', 'Ошибка. Попробуйте позже.');
