@@ -1,6 +1,6 @@
 {
-  "version": "1.0.2",
-  "released": "2026-07-07",
+  "version": "1.0.3",
+  "released": "2026-08-21",
   "name": "BetaLine Voice AI",
-  "notes": "Added branded BetaLine Voice AI favicon."
+  "notes": "Added sole-proprietor legal details (IP Romashchenko) to the footer."
 }
