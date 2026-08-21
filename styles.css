@@ -1090,6 +1090,10 @@ section { padding: clamp(64px, 9vw, 110px) 0; }
   color: #6B7280;
 }
 
+.zv-footer-legal { line-height: 1.7; }
+.zv-footer-legal a { color: inherit; font: inherit; }
+.zv-footer-legal a:hover { color: var(--orange); }
+
 /* ── Sticky mobile CTA ── */
 .zv-sticky-cta {
   position: fixed;
@@ -1208,6 +1212,9 @@ body.zv-menu-open .zv-sticky-cta { display: none !important; }
   .zv-hero-float { display: none; }
   .zv-sticky-cta.on { display: flex; }
   .zv-footer-grid { grid-template-columns: 1fr; gap: 28px; }
+  /* реквизиты уходили под липкую CTA, а кнопка чата в правом углу накрывала строку с ИНН */
+  .zv-footer { padding-bottom: 148px; }
+  .zv-footer-legal { padding-right: 72px; }
   .zv-result-flow { flex-direction: column; }
   .zv-flow-arrow { transform: rotate(90deg); }
   .zv-nav-cta { display: none; }
