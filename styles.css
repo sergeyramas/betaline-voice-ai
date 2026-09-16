@@ -112,7 +112,7 @@ section { padding: clamp(64px, 9vw, 110px) 0; }
 /* ── Navbar (glass, как sb-navbar основного сайта) ── */
 .zv-navbar {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: var(--eco-h, 0); left: 0; right: 0; /* под полоской ecosystem.js */
   z-index: 1000;
   background: rgba(255, 251, 245, 0.85);
   -webkit-backdrop-filter: blur(14px);
@@ -224,7 +224,7 @@ section { padding: clamp(64px, 9vw, 110px) 0; }
 .zv-mobile-menu {
   display: none;
   position: fixed;
-  top: 64px; left: 0; right: 0;
+  top: calc(64px + var(--eco-h, 0px)); left: 0; right: 0;
   z-index: 999;
   background: var(--bg-cream);
   border-bottom: 1px solid var(--orange-soft);
@@ -1788,3 +1788,6 @@ body.zv-menu-open .zv-sticky-cta { display: none !important; }
   #problems { padding-bottom: 120px; }
   .zv-problem-text blockquote { font-size: 18px; }
 }
+
+/* ecosystem.js: мобильная кнопка «назад» выше sticky-CTA */
+@media (max-width: 719px) { html { --eco-back-bottom: 84px; } }
