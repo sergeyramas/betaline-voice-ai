@@ -4,7 +4,8 @@
 
 ## Правила
 
-- **Деплой:** push в `main` → GitHub Actions → Vercel prod. Руками `vercel --prod` не деплоить.
+- **Деплой:** push в `main` → GitHub Actions → Vercel prod. 🔴 CI падает с июля 2026 (`VERCEL_TOKEN` отклонён — токен отключённой команды); пока секрет не обновлён — руками `vercel deploy --prod --yes --scope npz-avod` из корня (проект `betaline-voice-ai` в npz-avod, перелинкован 16.09).
+- **`ecosystem.js`** — копия из `~/Documents/betaline-ai-2/` (источник, не править здесь): полоска продуктов + кнопка «вернуться». Сдвиги: `.zv-navbar{top:var(--eco-h)}`, `--eco-back-bottom` в мобильной media.
 - **Git:** user.email `fantroms@gmail.com`, user.name `sergeyramas` (иначе проблемы с Vercel). На маке два gh-аккаунта — для push/secrets использовать `GH_TOKEN=$(gh auth token --user sergeyramas)`.
 - **API:** `api/` — своя копия боевого кода betaline-ai.ru (lead/callback/chat-ai). Лиды: `source=voice-landing`, `intent=demo-call`. Env vars — в Vercel-проекте `betaline-voice-ai` (скопированы с `tildastorybrandblocks`).
 - **Дизайн:** только токены `assets/css/saas-tokens.css` (палитра/шрифты betaline-ai.ru). Никаких новых палитр и шрифтов.
