@@ -14,3 +14,6 @@
 - **Картинки:** генерация `node scripts/gen-voice-images.mjs` (gpt-image-1, ключ из .env.local основного репо). Стиль: тёплый cream/orange, greeked-текст, без читаемых надписей.
 - Домен `zvonok.betaline-ai.ru` подключать только после явного «да» от Серёги.
 - QA перед показом: `npx playwright test tests/verify-v1.spec.ts` + обновить `verify-report.md`.
+
+## Яндекс.Директ (с 21.09.2026)
+ЕПК **`714626313`** только Поиск, черновик, клиент `e-16571744` (агентство gowindo-elama1). Цель стратегии — `voice_any_lead` (счётчик 111116675, доступ клиенту выдан). Полное описание, пороги, ревью Sol — `docs/ads/MONITORING.md`, `docs/ads/direct-spec-sol-review-2026-09-21.md`. Запуск/бюджет/стратегия — только оператор.
