@@ -4,9 +4,15 @@
    ============================================================ */
 
 /* ── Analytics helper ── */
+var ZV_LEAD_GOALS = { voice_form_submit_success: 1, chat_lead: 1, callback_chat: 1 };
 function zvTrack(name, params) {
   try {
     if (typeof ym !== 'undefined') ym(111116675, 'reachGoal', name);
+    // voice_any_lead — единая цель для Директа: любой контакт, один раз за визит
+    if (ZV_LEAD_GOALS[name] && !sessionStorage.getItem('zv_any_lead')) {
+      sessionStorage.setItem('zv_any_lead', '1');
+      if (typeof ym !== 'undefined') ym(111116675, 'reachGoal', 'voice_any_lead');
+    }
     if (window.va) window.va('event', { name: name, data: params || {} });
     if (window.gtag) window.gtag('event', name, params || {});
   } catch (_) { /* best-effort */ }
@@ -713,7 +719,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         localStorage.setItem('bl_chat_history', JSON.stringify(chatState.history.slice(-20)));
                     }
                     if (typeof ym !== 'undefined') ym(111116675, 'reachGoal', 'chat_message');
-                    if (final.contactDetected && typeof ym !== 'undefined') ym(111116675, 'reachGoal', 'chat_lead');
+                    if (final.contactDetected) zvTrack('chat_lead');
                 }
                 msgsEl.scrollTop = msgsEl.scrollHeight;
             }
@@ -792,7 +798,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!r.ok) throw new Error('err');
             document.getElementById('bl-callback-form').style.display = 'none';
             blAddMsg('system', '✅ Заявка принята! Перезвоним в ближайшее время.');
-            if (typeof ym !== 'undefined') ym(111116675, 'reachGoal', 'callback_chat');
+            zvTrack('callback_chat');
         })
         .catch(function() {
             blAddMsg('system', 'Ошибка. Попробуйте позже.');
