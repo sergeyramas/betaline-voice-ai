@@ -1,6 +1,9 @@
 const { appendRow } = require('./_lib/sheets');
 const { generatePassword } = require('./_lib/generate-password');
 const crypto = require('crypto');
+// Атрибуция (referrer, utm, yclid, first-touch, fallback host из Origin/Referer) — общая логика с betaline-ai-2, см. ./_lib/attr.js
+const { cleanAttr, attrLines, logLine } = require('./_lib/attr');
+const escHtml = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 function generateLeadId() {
   return 'L' + Date.now().toString(36) + crypto.randomBytes(3).toString('hex');
@@ -27,15 +30,18 @@ module.exports = async function handler(req, res) {
   if (!['quiz', 'audit', 'callback', 'pricing', 'url-capture', 'platform', 'voice-landing'].includes(source)) return res.status(400).json({ error: 'Invalid source' });
 
   const leadId = generateLeadId();
+  const attr = cleanAttr(req.body || {}, req);
+  // Одна строка в journald на лид — без телефона и имени
+  console.log(`${logLine(source, attr)} lead_id=${leadId}`);
   const contact = { phone, name };
   const botConfig = { site_url, site_excerpt, bot_name, tone, greeting, widget_color };
 
   // Fan out to all destinations in parallel
   const destinations = [
-    sendLeadCard(source, phone, { name, niche, task, platform, speed, price, date, time, company, result_channel, comment, base }, leadId),
-    appendLeadSheet(source, phone, { name, niche, task, platform, speed, price, date, time, company, result_channel, comment, base }, leadId),
-    sendToCRM(source, phone, { name, niche, task, platform, speed, price, date, time, company, result_channel, comment, base }, leadId),
-    sendEmail(source, phone, { name, niche, task, platform, speed, price, date, time, company, result_channel, comment, base }, leadId),
+    sendLeadCard(source, phone, { name, niche, task, platform, speed, price, date, time, company, result_channel, comment, base }, leadId, attr),
+    appendLeadSheet(source, phone, { name, niche, task, platform, speed, price, date, time, company, result_channel, comment, base }, leadId, attr),
+    sendToCRM(source, phone, { name, niche, task, platform, speed, price, date, time, company, result_channel, comment, base }, leadId, attr),
+    sendEmail(source, phone, { name, niche, task, platform, speed, price, date, time, company, result_channel, comment, base }, leadId, attr),
   ];
 
   // Platform-specific: auto-credentials (Supabase user + Telegram DM)
@@ -66,7 +72,7 @@ module.exports = async function handler(req, res) {
 };
 
 // --- Telegram: lead card to shared "Все лиды" topic ---
-async function sendLeadCard(source, phone, fields, leadId) {
+async function sendLeadCard(source, phone, fields, leadId, attr) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
   const leadsTopicId = process.env.LEADS_TOPIC_ID;
@@ -94,6 +100,7 @@ async function sendLeadCard(source, phone, fields, leadId) {
   if (fields.date || fields.time) lines.push(`📅 ${[fields.date, fields.time].filter(Boolean).join(' ')}`);
   lines.push(`🕐 ${dateStr} ${timeStr}`);
   if (leadId) lines.push(`🆔 ${leadId}`);
+  attrLines(attr).forEach((l) => lines.push(escHtml(l)));
   lines.push(`━━━━━━━━━━━━━━━━━━`);
 
   const body = { chat_id: chatId, text: lines.join('\n'), parse_mode: 'HTML' };
@@ -108,7 +115,7 @@ async function sendLeadCard(source, phone, fields, leadId) {
 }
 
 // --- Google Sheets (Лиды tab) ---
-async function appendLeadSheet(source, phone, fields, leadId) {
+async function appendLeadSheet(source, phone, fields, leadId, attr) {
   if (!process.env.GOOGLE_CREDENTIALS_BASE64) return SKIPPED; // _lib/sheets no-ops silently without creds
   const dateStr = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
   const row = [
@@ -123,13 +130,20 @@ async function appendLeadSheet(source, phone, fields, leadId) {
     fields.price || fields.base || '',                // I: Поддержка / Оценка / База
     [fields.date, fields.time].filter(Boolean).join(' ') || fields.comment || '',  // J: Срок / Комментарий
     leadId || '',                                     // K: Lead ID
+    // L..X — атрибуция, новые колонки только в конец (та же раскладка, что у betaline-ai-2)
+    attr.host || '', attr.utm_source || '', attr.utm_medium || '', attr.utm_campaign || '', attr.utm_content || '', attr.utm_term || '',
+    attr.yclid || '', attr.ym_uid || '', attr.landing || '', attr.page || '', attr.counter || '',
+    attr.referrer || '',                              // W: Referrer визита
+    [attr.first_referrer, attr.first_utm_source, attr.first_utm_medium, attr.first_utm_campaign, attr.first_yclid, attr.first_landing].some(Boolean)
+      ? `ref=${attr.first_referrer || '-'} utm=${[attr.first_utm_source, attr.first_utm_medium, attr.first_utm_campaign].map((v) => v || '-').join('/')} yclid=${attr.first_yclid || '-'} landing=${attr.first_landing || '-'}`
+      : '',                                           // X: Первый визит (first-touch)
   ];
   const sheetName = process.env.GOOGLE_SHEET_NAME || 'Лиды';
   await appendRow(sheetName, row);
 }
 
 // --- CRM (PocketBase) ---
-async function sendToCRM(source, phone, fields, leadId) {
+async function sendToCRM(source, phone, fields, leadId, attr) {
   const pbUrl = process.env.PB_URL;
   const pbToken = process.env.PB_API_TOKEN;
   if (!pbUrl || !pbToken) return SKIPPED;
@@ -158,6 +172,8 @@ async function sendToCRM(source, phone, fields, leadId) {
       fields.result_channel ? `Канал результата: ${fields.result_channel}` : '',
       fields.base ? `База для обзвона: ${fields.base}` : '',
       fields.comment ? `Комментарий: ${fields.comment}` : '',
+      `Источник: ${attr.host || '—'}, кампания: ${attr.utm_campaign || '—'}, yclid: ${attr.yclid ? 'да' : 'нет'}, referrer: ${attr.referrer || '—'}`,
+      attr.yclid ? `yclid: ${attr.yclid}` : '',
     ].filter(Boolean).join('\n'),
     niche: fields.niche || '',
     task_description: fields.task || '',

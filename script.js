@@ -3,15 +3,131 @@
    Формы и виджеты наследуют боевой код betaline-ai.ru.
    ============================================================ */
 
+window.BL_COUNTER = 111116675;
+/* ---------- Атрибуция лида v2 (переживает заблокированную Метрику) ----------
+   last-touch: yclid / utm_* из URL лендинга -> localStorage + sessionStorage + cookie bl_attr
+   (90 дней, на .betaline-ai.ru — общая для поддоменов). Новый рекламный заход заменяет метки.
+   first-touch: bl_first пишется ОДИН раз при первом заходе (landing с query, referrer, utm, yclid) и не перезаписывается.
+   referrer визита запоминается в sessionStorage (bl_ref), чтобы переход по страницам его не терял.
+   blLeadAttr(payload, counter) дописывает в тело /api/lead: yclid, utm_*, ym_uid, landing, page, host, counter,
+   referrer, first_landing, first_referrer, first_utm_*, first_yclid.
+   blGoal(name, counter) — цель Метрики: сразу, а если ym ещё нет — в очередь с повтором 20 с.
+   Менять вместе с копиями: betaline-ai-2/main.js, betaline-master/index.html, betaline-voice-ai/script.js. */
+(function () {
+    var KEY = 'bl_attr', FKEY = 'bl_first', RKEY = 'bl_ref';
+    var FIELDS = ['yclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+    function getCookie(n) {
+        try {
+            var m = document.cookie.match(new RegExp('(?:^|; )' + n + '=([^;]*)'));
+            return m ? decodeURIComponent(m[1]) : '';
+        } catch (e) { return ''; }
+    }
+    function setCookie(n, v) {
+        try {
+            var dom = /(^|\.)betaline-ai\.ru$/.test(location.hostname) ? '; domain=.betaline-ai.ru' : '';
+            document.cookie = n + '=' + encodeURIComponent(v) + '; max-age=' + (90 * 86400) + '; path=/; SameSite=Lax' +
+                dom + (location.protocol === 'https:' ? '; Secure' : '');
+        } catch (e) { /* noop */ }
+    }
+    function readKey(key) {
+        var raw = '';
+        try { raw = localStorage.getItem(key) || ''; } catch (e) { /* noop */ }
+        if (!raw) { try { raw = sessionStorage.getItem(key) || ''; } catch (e) { /* noop */ } }
+        if (!raw) raw = getCookie(key);
+        try { var o = raw ? JSON.parse(raw) : {}; return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; }
+    }
+    function saveKey(key, o) {
+        var s = JSON.stringify(o);
+        try { localStorage.setItem(key, s); } catch (e) { /* noop */ }
+        try { sessionStorage.setItem(key, s); } catch (e) { /* noop */ }
+        setCookie(key, s);
+    }
+    function query() {
+        var q = {};
+        try { new URLSearchParams(location.search).forEach(function (v, k) { q[k] = v; }); } catch (e) { /* noop */ }
+        return q;
+    }
+    /* внешний referrer текущего визита: на первой странице сессии берём document.referrer и держим в sessionStorage */
+    function visitRef() {
+        var r = '';
+        try { r = sessionStorage.getItem(RKEY) || ''; } catch (e) { /* noop */ }
+        if (r) return r === '-' ? '' : r;
+        var d = (document.referrer || '').split('#')[0].slice(0, 300);
+        try { if (d && new URL(d).hostname === location.hostname) d = ''; } catch (e) { /* noop */ }
+        try { sessionStorage.setItem(RKEY, d || '-'); } catch (e) { /* noop */ }
+        return d;
+    }
+    function captureAttr() {
+        var st = readKey(KEY), q = query(), touched = false, changed = false;
+        FIELDS.forEach(function (f) { if (q[f]) touched = true; });
+        if (touched) {   /* новый рекламный заход — заменяем прежние метки целиком */
+            FIELDS.forEach(function (f) { delete st[f]; });
+            FIELDS.forEach(function (f) { if (q[f]) st[f] = String(q[f]).slice(0, 80); });
+            st.landing = location.href.split('#')[0].slice(0, 400);
+            changed = true;
+        }
+        if (!st.landing) { st.landing = location.href.split('#')[0].slice(0, 400); changed = true; }
+        if (changed) saveKey(KEY, st);
+        /* first-touch: один раз, не перезаписывается */
+        var ft = readKey(FKEY);
+        if (!ft.landing) {
+            ft = { landing: location.href.split('#')[0].slice(0, 400), referrer: visitRef(), ts: Math.floor(Date.now() / 1000) };
+            FIELDS.forEach(function (f) { if (q[f]) ft[f] = String(q[f]).slice(0, 80); });
+            saveKey(FKEY, ft);
+        }
+        return st;
+    }
+    captureAttr();   /* сразу при загрузке: yclid ещё в адресной строке */
+    window.blLeadAttr = function (payload, counter) {
+        var st = captureAttr(), ft = readKey(FKEY), out = payload || {}, add = {};
+        FIELDS.forEach(function (f) { if (st[f]) add[f] = st[f]; });
+        var uid = getCookie('_ym_uid');
+        if (uid) add.ym_uid = uid.slice(0, 32);
+        add.landing = st.landing || location.href.split('#')[0].slice(0, 400);
+        add.page = location.href.split('#')[0].slice(0, 400);
+        add.host = location.hostname;
+        var ref = visitRef();
+        if (ref) add.referrer = ref;
+        if (ft.landing) add.first_landing = ft.landing;
+        if (ft.referrer) add.first_referrer = ft.referrer;
+        ['utm_source', 'utm_medium', 'utm_campaign', 'yclid'].forEach(function (f) { if (ft[f]) add['first_' + f] = ft[f]; });
+        var c = counter || window.YM_ID || window.BL_COUNTER;
+        if (c) add.counter = String(c);
+        Object.keys(add).forEach(function (k) { if (out[k] === undefined) out[k] = add[k]; });
+        return out;
+    };
+    /* Цель Метрики независимо от ответа сервера: сразу или из очереди, когда ym появится */
+    var recent = {}, queue = [], timer = null;
+    function flush() {
+        if (typeof window.ym !== 'function') return false;
+        while (queue.length) {
+            var g = queue.shift();
+            try { window.ym(g.c, 'reachGoal', g.n); } catch (e) { /* noop */ }
+        }
+        return true;
+    }
+    window.blGoal = function (name, counter) {
+        var c = counter || window.YM_ID || window.BL_COUNTER;
+        if (!c || !name) return;
+        var now = Date.now();
+        if (/lead|callback|submit/.test(name) && recent[name] && now - recent[name] < 3000) return;   /* двойной клик по заявке */
+        recent[name] = now;
+        queue.push({ n: name, c: c });
+        if (flush() || timer) return;
+        var tries = 0;
+        timer = setInterval(function () { if (flush() || ++tries > 40) { clearInterval(timer); timer = null; } }, 500);
+    };
+})();
+
 /* ── Analytics helper ── */
 var ZV_LEAD_GOALS = { voice_form_submit_success: 1, chat_lead: 1, callback_chat: 1 };
 function zvTrack(name, params) {
   try {
-    if (typeof ym !== 'undefined') ym(111116675, 'reachGoal', name);
+    if (window.blGoal) window.blGoal(name, 111116675);
     // voice_any_lead — единая цель для Директа: любой контакт, один раз за визит
     if (ZV_LEAD_GOALS[name] && !sessionStorage.getItem('zv_any_lead')) {
       sessionStorage.setItem('zv_any_lead', '1');
-      if (typeof ym !== 'undefined') ym(111116675, 'reachGoal', 'voice_any_lead');
+      if (window.blGoal) window.blGoal('voice_any_lead', 111116675);
     }
     if (window.va) window.va('event', { name: name, data: params || {} });
     if (window.gtag) window.gtag('event', name, params || {});
@@ -403,7 +519,9 @@ document.addEventListener('DOMContentLoaded', function () {
     btn.disabled = true;
     var t = btn.textContent;
     btn.textContent = 'Отправляем…';
-    Object.assign(payload, utm, { source: 'voice-landing', intent: 'demo-call', page_variant: 'v2' });
+    Object.assign(payload, { source: 'voice-landing', intent: 'demo-call', page_variant: 'v2' });
+    window.blLeadAttr(payload, 111116675);   /* referrer, first/last-touch, utm, yclid, ym_uid */
+    zvTrack('voice_form_submit_success');   /* цель на отправке, не по ответу API */
     fetch('/api/lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -411,7 +529,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }).then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       onOk();
-      zvTrack('voice_form_submit_success');
     }).catch(function () {
       onErr();
       zvTrack('voice_form_submit_error');
